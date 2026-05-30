@@ -13,6 +13,8 @@
             --bg: #f8f9fa;
             --text: #2c3e50;
             --card-bg: #ffffff;
+            --success: #2ecc71;
+            --danger: #e74c3c;
         }
         
         body {
@@ -60,7 +62,7 @@
         /* Grilles & Listes */
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
         .list-buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
-        .card-btn { background: #f8fafc; border: 2px solid #e2e8f0; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 1em; transition: all 0.2s; text-align: center; }
+        .card-btn { background: #f8fafc; border: 2px solid #e2e8f0; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 1em; transition: all 0.2s; text-align: center; width: 100%; box-sizing: border-box; }
         .card-btn:hover { border-color: var(--primary); background: var(--primary); color: white; }
 
         /* Badges */
@@ -78,6 +80,11 @@
         .chat-input-zone button { width: auto; padding: 0 20px; margin: 0; }
         
         .admin-action-btn { background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 0.8em; font-weight: bold; margin-left: 8px; text-decoration: underline; padding: 0; }
+
+        /* Feedback Quiz */
+        .quiz-feedback { margin-top: 15px; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; display: none; }
+        .quiz-feedback.success { display: block; background: #e8f5e9; color: var(--success); }
+        .quiz-feedback.error { display: block; background: #ffebee; color: var(--danger); }
     </style>
 </head>
 <body>
@@ -113,7 +120,7 @@
             <span id="badge-school">🏫 Établissement</span>
         </div>
         <h2>Tableau de bord</h2>
-        <p class="subtitle" style="margin-bottom:10px;">Tu peux explorer tous les niveaux, supérieurs ou inférieurs !</p>
+        <p class="subtitle" style="margin-bottom:10px;">Tu peux explorer tous les niveaux !</p>
         
         <div id="admin-banner" style="display:none; background:#fee2e2; border:1px solid #fca5a5; padding:10px; border-radius:10px; margin-bottom:15px; text-align:center;">
             <strong style="color:#b91c1c;">Mode Administrateur Activé 🛠️</strong><br>
@@ -142,8 +149,8 @@
         <p class="subtitle">Que veux-tu faire aujourd'hui ?</p>
         
         <div class="grid">
-            <button class="card-btn" onclick="openTool('quiz')">🎯 Quiz Interactifs</button>
-            <button class="card-btn" onclick="openTool('fiches')">📚 Fiches & Cours</button>
+            <button class="card-btn" onclick="openTool('quiz')">📝 Quiz Interactifs</button>
+            <button class="card-btn" onclick="openTool('fiches')">📚 Fiches de révision</button>
             <button class="card-btn" onclick="openTool('ia-prof')">🤖 Assistant IA Prof</button>
             <button class="card-btn" onclick="openTool('ia-psy')">❤️ IA Écoute & Stress</button>
         </div>
@@ -198,64 +205,90 @@
             <p style="color:#64748b; font-style:italic; margin:5px 0 0 0;">Aucun autre signalement. L'IA de modération veille.</p>
         </div>
 
-        <h3 style="text-align:left; font-size:1em;">🤖 Surveillance des Abus envers l'IA :</h3>
-        <div style="background:#f1f5f9; padding:10px; border-radius:10px; font-size:0.9em; color:#64748b; font-style:italic;">
-            Aucun abus d'insulte envers l'IA prof ou l'IA psy détecté aujourd'hui.
-        </div>
-
         <button class="btn btn-back" onclick="showScreen('screen-home')">Retour à l'accueil</button>
     </div>
 
 </div>
 
 <script>
-    // Variables globales de l'application
     let user = { username: "", school: "", role: "élève" };
     let selectedClass = "";
     let selectedSubject = "";
     let iaType = "prof";
 
-    // BASE DE DONNÉES COMPLÈTE DES QUIZ ET DES COURS (SÉCURISÉE)
+    // BASE DE DONNÉES ENTIÈREMENT NETTOYÉE ET STRUCTURÉE SANS ALERTES MULTIPLES
     const baseDonneesContenu = {
         "📐 Mathématiques": {
-            quiz: "<h3>Quiz de Mathématiques</h3><p><strong>Question :</strong> Quelle est la racine carrée de 9 ?</p><button class=\"card-btn\" onclick=\"alert('🎉 Bravo ! Bonne réponse !')\">3</button><button class=\"card-btn\" onclick=\"alert('❌ Dommage, la réponse était 3 !')\">6</button>",
-            cours: "<h3>Cours de Mathématiques</h3><p><strong>Thème :</strong> Les Racines Carrées.</p><p>La racine carrée d'un nombre positif x est le nombre qui, multiplié par lui-même, donne x. Exemple : la racine de 9 est 3 car 3 x 3 = 9.</p>"
+            quiz: {
+                question: "Quelle est la racine carrée de 9 ?",
+                options: ["3", "6", "9", "81"],
+                reponse: 0,
+                explication: "La racine carrée de 9 est 3 car 3 x 3 = 9."
+            },
+            cours: "<h3>📚 Cours de Mathématiques</h3><p>La racine carrée d'un nombre est le nombre qui, multiplié par lui-même, donne ce nombre initial. Exemple : la racine de 9 est 3 car 3² = 9.</p>"
         },
         "🧪 Physique-Chimie": {
-            quiz: "<h3>Quiz de Physique-Chimie</h3><p><strong>Question :</strong> Quelle est la formule chimique de l'eau ?</p><button class=\"card-btn\" onclick=\"alert('🎉 Bravo ! C’est bien H2O !')\">H2O</button><button class=\"card-btn\" onclick=\"alert('❌ Faux, CO2 c’est le dioxyde de carbone.')\">CO2</button>",
-            cours: "<h3>Cours de Physique-Chimie</h3><p><strong>Thème :</strong> Molécules et Atomes.</p><p>L'eau pure est un ensemble de molécules d'H2O. Chaque molécule possède 2 atomes d'Hydrogène et 1 atome d'Oxygène.</p>"
+            quiz: {
+                question: "Quelle est la formule chimique de la molécule d'eau ?",
+                options: ["CO2", "H2O", "NaCl", "O2"],
+                reponse: 1,
+                explication: "L'eau est composée de 2 atomes d'hydrogène et 1 atome d'oxygène, soit H2O."
+            },
+            cours: "<h3>📚 Cours de Physique-Chimie</h3><p>Une formule chimique représente la composition atomique d'une molécule. L'eau s'écrit H2O, le dioxyde de carbone s'écrit CO2.</p>"
         },
         "🌱 SVT": {
-            quiz: "<h3>Quiz de SVT</h3><p><strong>Question :</strong> Quel organe fonctionne comme une pompe pour envoyer le sang dans le corps ?</p><button class=\"card-btn\" onclick=\"alert('🎉 Excellent ! Le cœur est le moteur de la circulation.')\">Le cœur</button><button class=\"card-btn\" onclick=\"alert('❌ Non, les poumons servent à oxygéner le sang.')\">Les poumons</button>",
-            cours: "<h3>Cours de SVT</h3><p><strong>Thème :</strong> Le système cardiovasculaire.</p><p>Le cœur est un muscle creux. Ses contractions régulières permettent de propulser le sang oxygéné à travers tout notre corps.</p>"
+            quiz: {
+                question: "Quel organe majeur propulse le sang dans l'organisme ?",
+                options: ["Les poumons", "Le cerveau", "Le cœur", "Le foie"],
+                reponse: 2,
+                explication: "Le cœur agit comme une pompe musculaire centrale pour faire circuler le sang."
+            },
+            cours: "<h3>📚 Cours de SVT</h3><p>Le système cardiovasculaire permet l'apport de nutriments et de dioxygène aux organes. Le cœur en est le moteur principal.</p>"
         },
         "🤖 Technologie": {
-            quiz: "<h3>Quiz de Technologie</h3><p><strong>Question :</strong> Quel composant informatique conserve tes fichiers même quand l'ordinateur s'éteint ?</p><button class=\"card-btn\" onclick=\"alert('🎉 Gagné ! C’est le Disque Dur ou le SSD.')\">Le disque dur / SSD</button><button class=\"card-btn\" onclick=\"alert('❌ Perdu ! La RAM s’efface entièrement dès que le PC s’éteint.')\">La mémoire RAM</button>",
-            cours: "<h3>Cours de Technologie</h3><p><strong>Thème :</strong> Stockage et Composants.</p><p>On sépare la mémoire vive (RAM), qui est super rapide mais temporaire, et la mémoire de stockage (Disque dur / SSD), qui garde tes fichiers en sécurité de façon permanente.</p>"
+            quiz: {
+                question: "Quel composant stocke les données de manière permanente dans un PC ?",
+                options: ["La mémoire RAM", "Le processeur (CPU)", "Le disque dur / SSD", "La carte graphique"],
+                reponse: 2,
+                explication: "Le disque dur ou le SSD conserve les fichiers même lorsque l'ordinateur est éteint."
+            },
+            cours: "<h3>📚 Cours de Technologie</h3><p>On distingue la mémoire vive (RAM), qui s'efface à l'extinction, et la mémoire de stockage (HDD, SSD) qui conserve les fichiers à long terme.</p>"
         },
         "🌍 Histoire-Géographie": {
-            quiz: "<h3>Quiz d'Histoire-Géographie</h3><p><strong>Question :</strong> En quelle année a débuté la Première Guerre mondiale ?</p><button class=\"card-btn\" onclick=\"alert('🎉 Bonne réponse ! De 1914 à 1918.')\">1914</button><button class=\"card-btn\" onclick=\"alert('❌ Faux, 1939 correspond au début de la Seconde.')\">1939</button>",
-            cours: "<h3>Cours d'Histoire-Géographie</h3><p><strong>Thème :</strong> La Première Guerre Mondiale.</p><p>Déclenchée en 1914 à la suite de l'attentat de Sarajevo, elle s'achève par l'armistice le 11 novembre 1918. C'est une guerre totale caractérisée par l'enfer des tranchées.</p>"
+            quiz: {
+                question: "En quelle année a débuté la Première Guerre mondiale ?",
+                options: ["1914", "1918", "1939", "1945"],
+                reponse: 0,
+                explication: "La Première Guerre mondiale a commencé en août 1914 suite à l'attentat de Sarajevo."
+            },
+            cours: "<h3>📚 Cours d'Histoire-Géo</h3><p>La Grande Guerre (1914-1918) est caractérisée par la violence de masse et le passage d'une guerre de mouvement à une guerre de position (tranchées).</p>"
         },
         "📚 Français": {
-            quiz: "<h3>Quiz de Français</h3><p><strong>Question :</strong> Quelle est la nature grammaticale du mot 'magnifique' ?</p><button class=\"card-btn\" onclick=\"alert('🎉 Oui ! Il qualifie un nom.')\">Adjectif qualificatif</button><button class=\"card-btn\" onclick=\"alert('❌ Non, un verbe exprime une action ou un état.')\">Verbe</button>",
-            cours: "<h3>Cours de Français</h3><p><strong>Thème :</strong> Les natures de mots.</p><p>L'adjectif qualificatif apporte des précisions sur le nom ou le pronom auquel il se rapporte. Il peut changer de genre et de nombre (ex: des projets magnifiques).</p>"
+            quiz: {
+                question: "Quelle est la nature grammaticale du mot 'magnifique' ?",
+                options: ["Un verbe", "Un adverbe", "Un adjectif qualificatif", "Un nom commun"],
+                reponse: 2,
+                explication: "'Magnifique' sert à qualifier un nom, c'est donc un adjectif."
+            },
+            cours: "<h3>📚 Cours de Français</h3><p>L'adjectif qualificatif s'accorde en genre et en nombre avec le nom auquel il se rapporte et lui apporte des précisions.</p>"
         },
         "🇬🇧 Anglais": {
-            quiz: "<h3>Quiz d'Anglais</h3><p><strong>Question :</strong> Quelle est la bonne forme du prétérit pour le verbe irrégulier 'to go' ?</p><button class=\"card-btn\" onclick=\"alert('🎉 Perfect ! Go - Went - Gone.')\">Went</button><button class=\"card-btn\" onclick=\"alert('❌ No ! Gone est le participe passé.')\">Gone</button>",
-            cours: "<h3>Cours d'Anglais</h3><p><strong>Thème :</strong> Les verbes irréguliers.</p><p>Le prétérit sert à parler d'une action passée et terminée. Pour le verbe 'to go' (aller), la conjugaison au prétérit change complètement et devient 'went'.</p>"
+            quiz: {
+                question: "Quel est le prétérit du verbe irrégulier 'to go' ?",
+                options: ["Goed", "Gone", "Went", "Going"],
+                reponse: 2,
+                explication: "Le verbe 'to go' est irrégulier : prétérit = went, participe passé = gone."
+            },
+            cours: "<h3>📚 Cours d'Anglais</h3><p>Les verbes irréguliers doivent être appris par cœur pour maîtriser le prétérit simple et le présent parfait.</p>"
         },
         "🧪 Spécialité STL (Sciences de Labo)": {
-            quiz: "<h3>Quiz de Spécialité STL</h3><p><strong>Question :</strong> Quelle verrerie utilise-t-on pour mesurer un volume de solution avec une très grande précision ?</p><button class=\"card-btn\" onclick=\"alert('🎉 Top ! La fiole jaugée est faite pour ça !')\">La fiole jaugée</button><button class=\"card-btn\" onclick=\"alert('❌ Non, le bécher sert uniquement à transvaser ou contenir.')\">Le bécher</button>",
-            cours: "<h3>Cours de Spécialité STL</h3><p><strong>Thème :</strong> Les outils de mesure en laboratoire.</p><p>En sciences de laboratoire, la précision est fondamentale. On utilise de la verrerie jaugée (pipette, fiole) pour les mesures précises, et de la verrerie graduée (éprouvette) pour le travail courant.</p>"
-        },
-        "🧬 Biochimie-Biology": {
-            quiz: "<h3>Quiz de Biochimie</h3><p><strong>Question :</strong> De quelles petites molécules élémentaires sont constituées les protéines ?</p><button class=\"card-btn\" onclick=\"alert('🎉 Exact ! Les acides aminés forment la chaîne de la protéine.')\">Les acides aminés</button><button class=\"card-btn\" onclick=\"alert('❌ Non, les lipides correspondent aux matières grasses.')\">Les lipides</button>",
-            cours: "<h3>Cours de Biochimie-Biologie</h3><p><strong>Thème :</strong> Les Macromolécules.</p><p>Les protéines sont de longues chaînes de molécules appelées acides aminés. Il existe 20 acides aminés différents qui s'assemblent pour former toutes les protéines de notre corps.</p>"
-        },
-        "🔬 Option : Sciences et Laboratoire (Pré-STL)": {
-            quiz: "<h3>Quiz Sciences & Labo</h3><p><strong>Question :</strong> Que signifie le pictogramme représentant une flamme sur un flacon de produit chimique ?</p><button class=\"card-btn\" onclick=\"alert('🎉 Oui ! Le produit s’enflamme facilement.')\">Inflammable</button><button class=\"card-btn\" onclick=\"alert('❌ Faux, un produit rongeant les tissus est corrosif.')\">Corrosif</button>",
-            cours: "<h3>Cours Sciences & Labo</h3><p><strong>Thème :</strong> Sécurité en laboratoire.</p><p>Avant de manipuler en chimie, la lecture des pictogrammes de sécurité sur les flacons est obligatoire. Le port de la blouse en coton fermée et des lunettes protège des projections accidentelles.</p>"
+            quiz: {
+                question: "Quel instrument de verrerie offre la meilleure précision pour mesurer un volume fixe ?",
+                options: ["Le bécher", "L'éprouvette graduée", "La fiole jaugée", "Le erlenmeyer"],
+                reponse: 2,
+                explication: "La verrerie jaugée (comme la fiole jaugée) garantit la mesure de volume la plus précise en laboratoire."
+            },
+            cours: "<h3>📚 Cours de STL</h3><p>En biochimie et chimie de laboratoire, l'utilisation rigoureuse de la verrerie fine (pipettes, fioles jaugées) évite le cumul d'incertitudes expérimentales.</p>"
         }
     };
 
@@ -301,26 +334,11 @@
         document.getElementById('title-level').innerText = `Niveau : ${className}`;
         
         const container = document.getElementById('subjects-container');
+        let matieres = ["📐 Mathématiques", "🧪 Physique-Chimie", "🌱 SVT", "🤖 Technologie", "🌍 Histoire-Géographie", "📚 Français", "🇬🇧 Anglais"];
         
-        // Liste propre et harmonisée avec émojis
-        let matieres = [
-            "📐 Mathématiques", 
-            "🧪 Physique-Chimie", 
-            "🌱 SVT", 
-            "🤖 Technologie", 
-            "🌍 Histoire-Géographie", 
-            "📚 Français", 
-            "🇬🇧 Anglais"
-        ];
-        
-        // Options spécifiques lycée / Henri Martin
         if(user.school.toLowerCase().includes('martin') || user.school.toLowerCase().includes('st q') || className === 'Première' || className === 'Terminale') {
             if(className === 'Première' || className === 'Terminale') {
                 matieres.push("🧪 Spécialité STL (Sciences de Labo)");
-                matieres.push("🧬 Biochimie-Biologie");
-            }
-            if(className === 'Seconde') {
-                matieres.push("🔬 Option : Sciences et Laboratoire (Pré-STL)");
             }
         }
 
@@ -344,28 +362,55 @@
         } else if (tool === 'ia-prof') {
             iaType = 'prof';
             document.getElementById('ia-title').innerText = "🤖 Mon Assistant IA Prof";
-            document.getElementById('ia-subtitle').innerText = "Pose-moi tes questions sur le cours, je t'aide à comprendre.";
-            document.getElementById('ia-messages-box').innerHTML = `<div class='chat-msg msg-ai'><strong>IA Prof :</strong> Salut ! Qu'est-ce que tu révises aujourd'hui en ${selectedSubject} ?</div>`;
+            document.getElementById('ia-subtitle').innerText = "Pose-moi tes questions sur le cours.";
+            document.getElementById('ia-messages-box').innerHTML = `<div class='chat-msg msg-ai'><strong>IA Prof :</strong> Salut ! Qu'est-ce que tu révises en ${selectedSubject} ?</div>`;
             showScreen('screen-tool-ia');
         } else if (tool === 'ia-psy') {
             iaType = 'psy';
             document.getElementById('ia-title').innerText = "❤️ Espace Écoute & Bien-être";
-            document.getElementById('ia-subtitle').innerText = "Stressé par le Brevet ou le Bac ? Parlons-en.";
-            document.getElementById('ia-messages-box').innerHTML = "<div class='chat-msg msg-ai'><strong>IA Écoute :</strong> Bienvenue dans ton espace détente. Comment te sens-tu aujourd'hui ?</div>";
+            document.getElementById('ia-subtitle').innerText = "Stressé par tes examens ? Parlons-en.";
+            document.getElementById('ia-messages-box').innerHTML = "<div class='chat-msg msg-ai'><strong>IA Écoute :</strong> Bienvenue. Comment te sens-tu aujourd'hui ?</div>";
             showScreen('screen-tool-ia');
         } else {
-            // Gestion des Quiz et des Fiches/Cours réels
-            document.getElementById('content-tool-title').innerText = tool === 'quiz' ? "🎯 Quiz d'entraînement" : "📚 Fiche & Cours";
+            const body = document.getElementById('content-body');
             
-            let bodyContent = "";
-            if (baseDonneesContenu[selectedSubject]) {
-                bodyContent = tool === 'quiz' ? baseDonneesContenu[selectedSubject].quiz : baseDonneesContenu[selectedSubject].cours;
+            if (tool === 'quiz') {
+                document.getElementById('content-tool-title').innerText = "🎯 Quiz Interactif";
+                let data = baseDonneesContenu[selectedSubject];
+                
+                if (data && data.quiz) {
+                    let optionsHtml = "";
+                    data.quiz.options.forEach((opt, idx) => {
+                        optionsHtml += `<button class="card-btn" style="margin-top:8px;" onclick="verifierReponse(${idx})">${opt}</button>`;
+                    });
+                    
+                    body.innerHTML = `
+                        <h3>${selectedSubject}</h3>
+                        <p style="font-size:1.1em; font-weight:600; text-align:center;">${data.quiz.question}</p>
+                        <div style="margin:15px 0;">${optionsHtml}</div>
+                        <div id="quiz-feedback-zone" class="quiz-feedback"></div>
+                    `;
+                } else {
+                    body.innerHTML = `<h3>${selectedSubject}</h3><p>Aucun quiz disponible pour le moment.</p>`;
+                }
             } else {
-                bodyContent = `<h3>${selectedSubject}</h3><p>Contenu de révision en cours de préparation pour le niveau ${selectedClass}.</p>`;
+                document.getElementById('content-tool-title').innerText = "📚 Fiche & Cours";
+                body.innerHTML = baseDonneesContenu[selectedSubject] ? baseDonneesContenu[selectedSubject].cours : `<h3>${selectedSubject}</h3><p>Cours en rédaction.</p>`;
             }
-            
-            document.getElementById('content-body').innerHTML = bodyContent;
-            showScreen('screen-tools-content');
+            showScreen('screen-tool-content');
+        }
+    }
+
+    function verifierReponse(indexChoisi) {
+        let quizData = baseDonneesContenu[selectedSubject].quiz;
+        let feedbackZone = document.getElementById('quiz-feedback-zone');
+        
+        if (indexChoisi === quizData.reponse) {
+            feedbackZone.className = "quiz-feedback success";
+            feedbackZone.innerHTML = `🎉 Correct !<br><span style="font-size:0.9em; font-weight:normal;">${quizData.explication}</span>`;
+        } else {
+            feedbackZone.className = "quiz-feedback error";
+            feedbackZone.innerHTML = `❌ Faux. Réessaye !<br><span style="font-size:0.9em; font-weight:normal;">Indice : ${quizData.explication}</span>`;
         }
     }
 
@@ -375,29 +420,9 @@
         if(!text) return;
 
         const box = document.getElementById('chat-messages-box');
-        let adminAction = user.role === 'admin' ? ` <span style="color:gray; font-size:0.8em;">(Moi)</span>` : "";
-        box.innerHTML += `<div class="chat-msg msg-user"><strong>${user.username} :</strong> ${text}${adminAction}</div>`;
-        
-        setTimeout(() => {
-            let lowerText = text.toLowerCase();
-            if(lowerText.includes("ta gueule") && !lowerText.includes("tuer") && !lowerText.includes("menace")) {
-                box.innerHTML += `<div class="chat-msg msg-system">⚠️ [Alerte Modération] Langage familier détecté. Restez polis entre vous.</div>`;
-            }
-            else if(lowerText.includes("tuer") || lowerText.includes("harcelement") || lowerText.includes("naze") || lowerText.includes("menace")) {
-                box.innerHTML += `<div class="chat-msg msg-system">🚨 [Avertissement Automatique] Propos violents ou menaces détectés. Ton compte va être banni si tu récidives !</div>`;
-                
-                if(user.role !== 'admin') {
-                    const reports = document.getElementById('admin-reports');
-                    reports.innerHTML = `<div style="border-bottom:1px solid #cbd5e1; padding:5px 0; display:flex; justify-content:space-between; align-items:center; background:#fee2e2;">
-                        <span><strong>${user.username} :</strong> "${text}"</span>
-                        <button class="btn-admin" style="padding:2px 6px; border-radius:4px; border:none; cursor:pointer;" onclick="simulatedBan('${user.username}')">Ban Immédiat</button>
-                    </div>` + reports.innerHTML;
-                }
-            }
-            box.scrollTop = box.scrollHeight;
-        }, 600);
-
+        box.innerHTML += `<div class="chat-msg msg-user"><strong>${user.username} :</strong> ${text}</div>`;
         input.value = "";
+        box.scrollTop = box.scrollHeight;
     }
 
     function sendIaMessage() {
@@ -410,18 +435,14 @@
         
         setTimeout(() => {
             if(iaType === 'prof') {
-                box.innerHTML += `<div class="chat-msg msg-ai"><strong>IA Prof :</strong> C'est une bonne question sur le cours de ${selectedSubject} ! Pour t'aider à avancer sans te donner bêtement la solution, repense à la règle principale de notre chapitre. Qu'en penses-tu ?</div>`;
+                box.innerHTML += `<div class="chat-msg msg-ai"><strong>IA Prof :</strong> C'est une bonne question sur ${selectedSubject} ! Reprenons les bases ensemble pour résoudre cela...</div>`;
             } else {
-                box.innerHTML += `<div class="chat-msg msg-ai"><strong>IA Écoute :</strong> Je comprends tout à fait ta situation. Le stress des examens ou des cours arrive à tout le monde. Pense à faire une petite pause active de quelques minutes, tu fais de ton mieux ! 😊</div>`;
+                box.innerHTML += `<div class="chat-msg msg-ai"><strong>IA Écoute :</strong> Prends une grande inspiration, le stress fait partie de l'apprentissage. Tu vas y arriver !</div>`;
             }
             box.scrollTop = box.scrollHeight;
-        }, 800);
+        }, 600);
 
         input.value = "";
-    }
-
-    function simulatedBan(name) {
-        alert(`🔨 Action Admin : L'utilisateur [${name}] a été banni temporairement pendant 24h pour non-respect des règles.`);
     }
 </script>
 
