@@ -73,18 +73,20 @@
         .chat-msg { padding: 8px 12px; border-radius: 8px; max-width: 85%; font-size: 0.95em; position: relative; }
         .msg-user { background: #e0f2fe; align-self: flex-end; }
         .msg-other { background: #f1f5f9; align-self: flex-start; }
-        .msg-system { background: #ffe4e6; color: #b91c1c; align-self: center; font-size: 0.85em; font-weight: bold; }
         .msg-ai { background: #f0fdf4; border-left: 4px solid var(--secondary); align-self: flex-start; }
         .chat-input-zone { display: flex; gap: 8px; }
         .chat-input-zone input { flex: 1; }
         .chat-input-zone button { width: auto; padding: 0 20px; margin: 0; }
-        
-        .admin-action-btn { background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 0.8em; font-weight: bold; margin-left: 8px; text-decoration: underline; padding: 0; }
 
         /* Feedback Quiz */
         .quiz-feedback { margin-top: 15px; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; display: none; }
         .quiz-feedback.success { display: block; background: #e8f5e9; color: var(--success); }
         .quiz-feedback.error { display: block; background: #ffebee; color: var(--danger); }
+
+        /* Fiches de cours */
+        .fiche-item { background: #f1f5f9; padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid var(--primary); text-align: left; }
+        .fiche-item h4 { margin: 0 0 5px 0; color: var(--primary); }
+        .fiche-item p { margin: 0; font-size: 0.95em; line-height: 1.4; }
     </style>
 </head>
 <body>
@@ -194,17 +196,7 @@
 
     <div id="screen-admin-panel" class="screen">
         <h2 style="color:var(--admin-color);">🛠️ Panneau d'Administration</h2>
-        <p class="subtitle">Gestion des signalements et surveillance globale</p>
-        
-        <h3 style="text-align:left; font-size:1em;">🚨 Signalements récents du Chat :</h3>
-        <div style="background:#f1f5f9; padding:10px; border-radius:10px; font-size:0.9em; margin-bottom:15px;" id="admin-reports">
-            <div style="border-bottom:1px solid #cbd5e1; padding:5px 0; display:flex; justify-content:space-between; align-items:center;">
-                <span><strong>Maxime :</strong> "T'es trop nul abandonne la STL"</span>
-                <button class="btn-admin" style="padding:2px 6px; border-radius:4px; border:none; cursor:pointer;" onclick="simulatedBan('Maxime')">Ban 24h</button>
-            </div>
-            <p style="color:#64748b; font-style:italic; margin:5px 0 0 0;">Aucun autre signalement. L'IA de modération veille.</p>
-        </div>
-
+        <p class="subtitle">Gestion des rapports</p>
         <button class="btn btn-back" onclick="showScreen('screen-home')">Retour à l'accueil</button>
     </div>
 
@@ -216,7 +208,7 @@
     let selectedSubject = "";
     let iaType = "prof";
 
-    // BASE DE DONNÉES ENTIÈREMENT NETTOYÉE ET STRUCTURÉE SANS ALERTES MULTIPLES
+    // BASE DE DONNÉES AVEC PLUSIEURS LIGNES/CHAPITRES DE COURS PAR MATIÈRE
     const baseDonneesContenu = {
         "📐 Mathématiques": {
             quiz: {
@@ -225,7 +217,10 @@
                 reponse: 0,
                 explication: "La racine carrée de 9 est 3 car 3 x 3 = 9."
             },
-            cours: "<h3>📚 Cours de Mathématiques</h3><p>La racine carrée d'un nombre est le nombre qui, multiplié par lui-même, donne ce nombre initial. Exemple : la racine de 9 est 3 car 3² = 9.</p>"
+            cours: [
+                { titre: "Chapitre 1 : Les Racines Carrées", texte: "La racine carrée d'un nombre est le nombre qui, multiplié par lui-même, donne ce nombre initial. Exemple : √9 = 3 car 3² = 9." },
+                { titre: "Chapitre 2 : Le Théorème de Pythagore", texte: "Dans un triangle rectangle, le carré de la longueur de l'hypoténuse est égal à la somme des carrés des longueurs des deux autres côtés : BC² = AB² + AC²." }
+            ]
         },
         "🧪 Physique-Chimie": {
             quiz: {
@@ -234,7 +229,10 @@
                 reponse: 1,
                 explication: "L'eau est composée de 2 atomes d'hydrogène et 1 atome d'oxygène, soit H2O."
             },
-            cours: "<h3>📚 Cours de Physique-Chimie</h3><p>Une formule chimique représente la composition atomique d'une molécule. L'eau s'écrit H2O, le dioxyde de carbone s'écrit CO2.</p>"
+            cours: [
+                { titre: "Chapitre 1 : Molécules et Atomes", texte: "Une formule chimique représente la composition atomique d'une molécule. L'eau s'écrit H2O, le dioxyde de carbone s'écrit CO2." },
+                { titre: "Chapitre 2 : Les États de la Matière", texte: "La matière existe sous trois états physiques principaux : solide, liquide et gazeux. Les passages d'un état à un autre sont des changements d'état (ex: fusion, vaporisation)." }
+            ]
         },
         "🌱 SVT": {
             quiz: {
@@ -243,7 +241,10 @@
                 reponse: 2,
                 explication: "Le cœur agit comme une pompe musculaire centrale pour faire circuler le sang."
             },
-            cours: "<h3>📚 Cours de SVT</h3><p>Le système cardiovasculaire permet l'apport de nutriments et de dioxygène aux organes. Le cœur en est le moteur principal.</p>"
+            cours: [
+                { titre: "Chapitre 1 : Le Système Cardiovasculaire", texte: "Il permet l'apport de nutriments et de dioxygène aux organes. Le cœur en est le moteur principal en agissant comme une pompe." },
+                { titre: "Chapitre 2 : La Génétique et l'ADN", texte: "L'ADN est le support de l'information génétique. Il est localisé dans le noyau des cellules et structuré sous forme de chromosomes." }
+            ]
         },
         "🤖 Technologie": {
             quiz: {
@@ -252,7 +253,10 @@
                 reponse: 2,
                 explication: "Le disque dur ou le SSD conserve les fichiers même lorsque l'ordinateur est éteint."
             },
-            cours: "<h3>📚 Cours de Technologie</h3><p>On distingue la mémoire vive (RAM), qui s'efface à l'extinction, et la mémoire de stockage (HDD, SSD) qui conserve les fichiers à long terme.</p>"
+            cours: [
+                { titre: "Chapitre 1 : L'Architecture d'un Ordinateur", texte: "On distingue la mémoire vive (RAM), qui s'efface à l'extinction, et la mémoire de stockage (HDD, SSD) qui conserve les fichiers à long terme." },
+                { titre: "Chapitre 2 : Les Réseaux et IP", texte: "Une adresse IP permet d'identifier de manière unique une machine sur un réseau informatique pour lui permettre de communiquer." }
+            ]
         },
         "🌍 Histoire-Géographie": {
             quiz: {
@@ -261,7 +265,10 @@
                 reponse: 0,
                 explication: "La Première Guerre mondiale a commencé en août 1914 suite à l'attentat de Sarajevo."
             },
-            cours: "<h3>📚 Cours d'Histoire-Géo</h3><p>La Grande Guerre (1914-1918) est caractérisée par la violence de masse et le passage d'une guerre de mouvement à une guerre de position (tranchées).</p>"
+            cours: [
+                { titre: "Chapitre 1 : La Première Guerre Mondiale", texte: "La Grande Guerre (1914-1918) est caractérisée par la violence de masse et le passage d'une guerre de mouvement à une guerre de position (tranchées)." },
+                { titre: "Chapitre 2 : Les Espaces Productifs en France", texte: "Un espace productif est un territoire aménagé et mis en valeur pour développer une activité économique (agricole, industrielle ou tertiaire)." }
+            ]
         },
         "📚 Français": {
             quiz: {
@@ -270,7 +277,10 @@
                 reponse: 2,
                 explication: "'Magnifique' sert à qualifier un nom, c'est donc un adjectif."
             },
-            cours: "<h3>📚 Cours de Français</h3><p>L'adjectif qualificatif s'accorde en genre et en nombre avec le nom auquel il se rapporte et lui apporte des précisions.</p>"
+            cours: [
+                { titre: "Chapitre 1 : Les Classes Grammaticales", texte: "L'adjectif qualificatif s'accorde en genre et en nombre avec le nom auquel il se rapporte et lui apporte des précisions." },
+                { titre: "Chapitre 2 : Les Figures de Style", texte: "La métaphore et la comparaison lient deux éléments. La comparaison utilise un outil de comparaison (comme, tel que), contrairement à la métaphore." }
+            ]
         },
         "🇬🇧 Anglais": {
             quiz: {
@@ -279,7 +289,10 @@
                 reponse: 2,
                 explication: "Le verbe 'to go' est irrégulier : prétérit = went, participe passé = gone."
             },
-            cours: "<h3>📚 Cours d'Anglais</h3><p>Les verbes irréguliers doivent être appris par cœur pour maîtriser le prétérit simple et le présent parfait.</p>"
+            cours: [
+                { titre: "Chapitre 1 : Le Prétérit Simple", texte: "Le prétérit s'utilise pour des actions passées, terminées et coupées du présent. Pour les verbes réguliers, on ajoute le suffixe -ed." },
+                { titre: "Chapitre 2 : Les Verbes Irréguliers", texte: "Les verbes irréguliers changent de forme au prétérit et au participe passé. Ils doivent être appris par cœur (ex: buy -> bought -> bought)." }
+            ]
         },
         "🧪 Spécialité STL (Sciences de Labo)": {
             quiz: {
@@ -288,7 +301,10 @@
                 reponse: 2,
                 explication: "La verrerie jaugée (comme la fiole jaugée) garantit la mesure de volume la plus précise en laboratoire."
             },
-            cours: "<h3>📚 Cours de STL</h3><p>En biochimie et chimie de laboratoire, l'utilisation rigoureuse de la verrerie fine (pipettes, fioles jaugées) évite le cumul d'incertitudes expérimentales.</p>"
+            cours: [
+                { titre: "Chapitre 1 : La Verrerie de Précision", texte: "En biochimie et chimie de laboratoire, l'utilisation rigoureuse de la verrerie fine (pipettes, fioles jaugées) évite le cumul d'incertitudes." },
+                { titre: "Chapitre 2 : Les Préparations de Solutions", texte: "La dissolution consiste à dissoudre un soluté solide dans un solvant. La dilution consiste à ajouter du solvant pour diminuer la concentration d'une solution mère." }
+            ]
         }
     };
 
@@ -394,8 +410,24 @@
                     body.innerHTML = `<h3>${selectedSubject}</h3><p>Aucun quiz disponible pour le moment.</p>`;
                 }
             } else {
-                document.getElementById('content-tool-title').innerText = "📚 Fiche & Cours";
-                body.innerHTML = baseDonneesContenu[selectedSubject] ? baseDonneesContenu[selectedSubject].cours : `<h3>${selectedSubject}</h3><p>Cours en rédaction.</p>`;
+                // AFFICHAGE DYNAMIQUE DES MULTIPLES FICHES DE COURS
+                document.getElementById('content-tool-title').innerText = "📚 Fiches de Révision";
+                let data = baseDonneesContenu[selectedSubject];
+                
+                if (data && Array.isArray(data.cours)) {
+                    let fichesHtml = `<h3>${selectedSubject}</h3><p class="subtitle">Sélectionne un chapitre pour réviser :</p>`;
+                    data.cours.forEach(fiche => {
+                        fichesHtml += `
+                            <div class="fiche-item">
+                                <h4>${fiche.titre}</h4>
+                                <p>${fiche.texte}</p>
+                            </div>
+                        `;
+                    });
+                    body.innerHTML = fichesHtml;
+                } else {
+                    body.innerHTML = `<h3>${selectedSubject}</h3><p>Aucune fiche de cours disponible pour le moment.</p>`;
+                }
             }
             showScreen('screen-tool-content');
         }
