@@ -288,91 +288,55 @@
         showScreen('screen-tools');
     }
 
-    // --- BASE DE DONNÉES DES QUIZ ET COURS ---
+   // --- BASE DE DONNEES DES QUIZ ET COURS ---
 const baseDonneesContenu = {
     "📐 Mathématiques": {
-        quiz: `<h3>Quiz de Mathématiques</h3>
-               <p><strong>Question :</strong> Quelle est la racine carrée de 9 ?</p>
-               <button class="card-btn" onclick="alert('🎉 Bravo ! Bonne réponse !')">3</button>
-               <button class="card-btn" onclick="alert('❌ Dommage ! La réponse était 3.')">6</button>`,
-        cours: `<h3>Cours de Mathématiques</h3>
-                <p><strong>Thème :</strong> Les puissances et racines.</p>
-                <p>La racine carrée d'un nombre positif $x$ est le nombre qui, multiplié par lui-même, donne $x$. Exemple : $\\sqrt{9} = 3$ car $3 \\times 3 = 9$.</p>`
+        quiz: "<h3>Quiz de Mathématiques</h3><p><strong>Question :</strong> Quelle est la racine carrée de 9 ?</p><button class='card-btn' onclick=\"alert('🎉 Bravo ! Bonne réponse !')\">3</button><button class='card-btn' onclick=\"alert('❌ Dommage !')\">6</button>",
+        cours: "<h3>Cours de Mathématiques</h3><p>La racine carrée d'un nombre est le nombre qui, multiplié par lui-même, donne ce nombre. Exemple : la racine de 9 est 3 car 3 x 3 = 9.</p>"
     },
     "🧪 Physique-Chimie": {
-        quiz: `<h3>Quiz de Physique-Chimie</h3>
-               <p><strong>Question :</strong> Quelle est la formule chimique de l'eau ?</p>
-               <button class="card-btn" onclick="alert('🎉 Bravo ! Bonne réponse !')">H2O</button>
-               <button class="card-btn" onclick="alert('❌ Mauvaise réponse, c\'est H2O.')">CO2</button>`,
-        cours: `<h3>Cours de Physique-Chimie</h3>
-                <p><strong>Thème :</strong> Les molécules et Atomes.</p>
-                <p>L'eau est constituée de deux atomes d'Hydrogène (H) et d'un atome d'Oxygène (O), d'où sa formule chimique : H₂O.</p>`
+        quiz: "<h3>Quiz de Physique-Chimie</h3><p><strong>Question :</strong> Quelle est la formule chimique de l'eau ?</p><button class='card-btn' onclick=\"alert('🎉 Bravo ! Bonne réponse !')\">H2O</button><button class='card-btn' onclick=\"alert('❌ Mauvaise réponse.')\">CO2</button>",
+        cours: "<h3>Cours de Physique-Chimie</h3><p>L'eau est constituée de deux atomes d'Hydrogène (H) et d'un atome d'Oxygène (O), d'où sa formule chimique : H2O.</p>"
     },
     "🌱 SVT": {
-        quiz: `<h3>Quiz de SVT</h3>
-               <p><strong>Question :</strong> Quel organe est responsable de la circulation du sang ?</p>
-               <button class="card-btn" onclick="alert('🎉 Bravo !')">Le cœur</button>
-               <button class="card-btn" onclick="alert('❌ Non, c\'est le cœur.')">Les poumons</button>`,
-        cours: `<h3>Cours de SVT</h3>
-                <p><strong>Thème :</strong> Le système cardiovasculaire.</p>
-                <p>Le cœur est un muscle creux qui fonctionne comme une pompe pour propulser le sang dans tout l'organisme.</p>`
+        quiz: "<h3>Quiz de SVT</h3><p><strong>Question :</strong> Quel organe est responsable de la circulation du sang ?</p><button class='card-btn' onclick=\"alert('🎉 Bravo !')\">Le cœur</button><button class='card-btn' onclick=\"alert('❌ Non, c'est le cœur.')\">Les poumons</button>",
+        cours: "<h3>Cours de SVT</h3><p>Le cœur est un muscle creux qui fonctionne comme une pompe pour propulser le sang dans tout l'organisme.</p>"
     },
     "🤖 Technologie": {
-        quiz: `<h3>Quiz de Technologie</h3>
-               <p><strong>Question :</strong> Quel composant stocke les données de manière permanente ?</p>
-               <button class="card-btn" onclick="alert('🎉 Bonne réponse !')">Le disque dur / SSD</button>
-               <button class="card-btn" onclick="alert('❌ Non, la RAM s\'efface à l\'extinction.')">La mémoire RAM</button>`,
-        cours: `<h3>Cours de Technologie</h3>
-                <p><strong>Thème :</strong> L'architecture d'un ordinateur.</p>
-                <p>Pour stocker tes fichiers (photos, système, jeux), l'ordinateur utilise un stockage non-volatile : le Disque Dur (HDD) ou le SSD.</p>`
+        quiz: "<h3>Quiz de Technologie</h3><p><strong>Question :</strong> Quel composant stocke les données de manière permanente ?</p><button class='card-btn' onclick=\"alert('🎉 Bonne réponse !')\">Le disque dur / SSD</button><button class='card-btn' onclick=\"alert('❌ Non.')\">La mémoire RAM</button>",
+        cours: "<h3>Cours de Technologie</h3><p>Pour stocker tes fichiers de manière permanente, l'ordinateur utilise un Disque Dur (HDD) ou un SSD.</p>"
     },
     "🌍 Histoire-Géographie": {
-        quiz: `<h3>Quiz d'Histoire-Géo</h3>
-               <p><strong>Question :</strong> En quelle année a débuté la Première Guerre mondiale ?</p>
-               <button class="card-btn" onclick="alert('❌ Non, c\'est le début de la Seconde.')">1348</button>
-               <button class="card-btn" onclick="alert('🎉 Exact !')">1914</button>`,
-        cours: `<h3>Cours d'Histoire-Géo</h3>
-                <p><strong>Thème :</strong> Civils et militaires dans la Première Guerre mondiale.</p>
-                <p>La Première Guerre mondiale se déroule de 1914 à 1918. C'est une guerre totale impliquant l'ensemble des sociétés.</p>`
+        quiz: "<h3>Quiz d'Histoire-Géo</h3><p><strong>Question :</strong> En quelle année a débuté la Première Guerre mondiale ?</p><button class='card-btn' onclick=\"alert('❌ Non.')\">1939</button><button class='card-btn' onclick=\"alert('🎉 Exact !')\">1914</button>",
+        cours: "<h3>Cours d'Histoire-Géo</h3><p>La Première Guerre mondiale se déroule de 1914 à 1918. C'est une guerre totale impliquant l'ensemble des sociétés.</p>"
     },
     "📚 Français": {
-        quiz: `<h3>Quiz de Français</h3>
-               <p><strong>Question :</strong> Quelle est la nature du mot "magnifique" ?</p>
-               <button class="card-btn" onclick="alert('🎉 Oui !')">Adjectif qualificatif</button>
-               <button class="card-btn" onclick="alert('❌ Non, c\'est un adjectif.')">Verbe</button>`,
-        cours: `<h3>Cours de Français</h3>
-                <p><strong>Thème :</strong> Les classes grammaticales.</p>
-                <p>L'adjectif qualificatif donne une précision sur le nom qu'il accompagne (ex: Un projet <em>magnifique</em>).</p>`
+        quiz: "<h3>Quiz de Français</h3><p><strong>Question :</strong> Quelle est la nature du mot 'magnifique' ?</p><button class='card-btn' onclick=\"alert('🎉 Oui !')\">Adjectif</button><button class='card-btn' onclick=\"alert('❌ Non.')\">Verbe</button>",
+        cours: "<h3>Cours de Français</h3><p>L'adjectif qualificatif donne une précision sur le nom qu'il accompagne (ex: Un projet magnifique).</p>"
     },
     "🇬🇧 Anglais": {
-        quiz: `<h3>Quiz d'Anglais</h3>
-               <p><strong>Question :</strong> Quel est le prétérit du verbe "to go" ?</p>
-               <button class="card-btn" onclick="alert('❌ Non, gone est le participe passé.')">Gone</button>
-               <button class="card-btn" onclick="alert('🎉 Well done !')">Went</button>`,
-        cours: `<h3>Cours d'Anglais</h3>
-                <p><strong>Thème :</strong> Les verbes irréguliers.</p>
-                <p>Le verbe "to go" (aller) est irrégulier. Sa forme au prétérit est <strong>went</strong>, et son participe passé est <strong>gone</strong>.</p>`
+        quiz: "<h3>Quiz d'Anglais</h3><p><strong>Question :</strong> Quel est le prétérit du verbe 'to go' ?</p><button class='card-btn' onclick=\"alert('❌ Non.')\">Gone</button><button class='card-btn' onclick=\"alert('🎉 Well done !')\">Went</button>",
+        cours: "<h3>Cours d'Anglais</h3><p>Le verbe 'to go' (aller) est irrégulier. Sa forme au prétérit est went, et son participe passé est gone.</p>"
     }
 };
 
-// --- FONCTION DE SÉLECTION DU MENU ---
+// --- FONCTION DE SELECTION DU MENU ---
 function openTool(tool) {
     if (tool === 'chat') {
         showScreen('screen-tool-chat');
     } else if (tool === 'ia-prof') {
         iaType = 'prof';
         document.getElementById('ia-title').innerText = "🤖 Mon Assistant IA Prof";
-        document.getElementById('ia-subtitle').innerText = "Pose-moi tes questions sur le cours, je t'aide à comprendre sans donner la réponse directement.";
-        document.getElementById('ia-messages-box').innerHTML = `<div class="chat-msg msg-ai"><strong>IA Prof :</strong> Salut ! Qu'est-ce que tu révises aujourd'hui en ${selectedSubject} ?</div>`;
+        document.getElementById('ia-subtitle').innerText = "Pose-moi tes questions sur le cours, je t'aide à comprendre.";
+        document.getElementById('ia-messages-box').innerHTML = "<div class='chat-msg msg-ai'><strong>IA Prof :</strong> Salut ! Qu'est-ce que tu révises aujourd'hui ?</div>";
         showScreen('screen-tool-ia');
     } else if (tool === 'ia-psy') {
         iaType = 'psy';
         document.getElementById('ia-title').innerText = "❤️ Espace Écoute & Bien-être";
-        document.getElementById('ia-subtitle').innerText = "Stressé par le Brevet, le Bac ou fatigué ? Parlons-en en toute sécurité.";
-        document.getElementById('ia-messages-box').innerHTML = `<div class="chat-msg msg-ai"><strong>IA Écoute :</strong> Bienvenue dans ton espace bien-être. Comment te sens-tu aujourd'hui ?</div>`;
+        document.getElementById('ia-subtitle').innerText = "Stressé par le Brevet ou le Bac ? Parlons-en.";
+        document.getElementById('ia-messages-box').innerHTML = "<div class='chat-msg msg-ai'><strong>IA Écoute :</strong> Bienvenue. Comment te sens-tu aujourd'hui ?</div>";
         showScreen('screen-tool-ia');
     } else {
-        // Gestion dynamique des Quiz, Fiches et Cours réels
         document.getElementById('content-tool-title').innerText = tool === 'quiz' ? "🎯 Quiz d'entraînement" : "📚 Fiche & Cours";
         
         let matiereCle = Object.keys(baseDonneesContenu).find(cle => selectedSubject.includes(cle.substring(3)));
@@ -381,9 +345,7 @@ function openTool(tool) {
         if (matiereCle && baseDonneesContenu[matiereCle]) {
             bodyContent = tool === 'quiz' ? baseDonneesContenu[matiereCle].quiz : baseDonneesContenu[matiereCle].cours;
         } else {
-            // Contenu de secours si la matière n'est pas encore enregistrée
-            bodyContent = `<h3>${selectedSubject}</h3>
-                           <p>Contenu en cours de rédaction pour le niveau ${selectedClass}.</p>`;
+            bodyContent = "<h3>" + selectedSubject + "</h3><p>Contenu en cours de rédaction.</p>";
         }
         
         document.getElementById('content-body').innerHTML = bodyContent;
