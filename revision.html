@@ -225,6 +225,15 @@
 
     function handleLogin(e) {
         e.preventDefault();
+        const selectedRole = document.getElementById('role').value;
+    if (selectedRole === 'admin') {
+        const password = prompt("Entrez le mot de passe administrateur :");
+        if (password !== "AdmiN123nF") {
+            alert("Accès refusé ! Vous n'êtes pas l'administrateur.");
+            e.preventDefault();
+            return;
+        }
+    }
         user.username = document.getElementById('username').value;
         user.school = document.getElementById('school').value;
         user.role = document.getElementById('role').value;
