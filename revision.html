@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Révision 3ème 2nd 1ère Terminale</title>
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --primary-hover: #3b5984;
+            --secondary: #13c1ac;
+            --admin-color: #e74c3c;
+            --bg: #f8f9fa;
+            --text: #2c3e50;
+            --card-bg: #ffffff;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 95vh;
+        }
+
+        .app-container {
+            max-width: 600px;
+            width: 100%;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            box-sizing: border-box;
+        }
+
+        h1, h2, h3 { text-align: center; margin-top: 0; }
+        .subtitle { text-align: center; color: #7f8c8d; font-size: 0.95em; margin-bottom: 25px; }
+
+        /* Formulaires */
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9em; }
+        input, select { width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; box-sizing: border-box; outline: none; font-size: 1em; }
+        input:focus, select:focus { border-color: var(--primary); }
+
+        /* Boutons */
+        .btn { width: 100%; padding: 14px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1em; transition: all 0.2s; margin-top: 5px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-hover); }
+        .btn-admin { background: var(--admin-color); color: white; }
+        .btn-back { background: #edf2f7; color: #4a5568; margin-top: 15px; }
+
+        /* Écrans */
+        .screen { display: none; }
+        .screen.active { display: block; }
+
+        /* Grilles & Listes */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
+        .list-buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+        .card-btn { background: #f8fafc; border: 2px solid #e2e8f0; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 1em; transition: all 0.2s; text-align: center; }
+        .card-btn:hover { border-color: var(--primary); background: var(--primary); color: white; }
+
+        /* Badges */
+        .header-status { display: flex; justify-content: space-between; align-items: center; background: #edf2f7; padding: 8px 15px; border-radius: 30px; font-size: 0.85em; margin-bottom: 20px; font-weight: 600; }
+
+        /* Zone de Chat & IA */
+        .chat-box { height: 200px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: #f8fafc; padding: 10px; overflow-y: auto; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
+        .chat-msg { padding: 8px 12px; border-radius: 8px; max-width: 85%; font-size: 0.95em; position: relative; }
+        .msg-user { background: #e0f2fe; align-self: flex-end; }
+        .msg-other { background: #f1f5f9; align-self: flex-start; }
+        .msg-system { background: #ffe4e6; color: #b91c1c; align-self: center; font-size: 0.85em; font-weight: bold; }
+        .msg-ai { background: #f0fdf4; border-left: 4px solid var(--secondary); align-self: flex-start; }
+        .chat-input-zone { display: flex; gap: 8px; }
+        .chat-input-zone input { flex: 1; }
+        .chat-input-zone button { width: auto; padding: 0 20px; margin: 0; }
+        
+        .admin-action-btn { background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 0.8em; font-weight: bold; margin-left: 8px; text-decoration: underline; padding: 0; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+
+    <div id="screen-login" class="screen active">
+        <h1>Révision 3ème 2nd 1ère Terminale</h1>
+        <p class="subtitle">Entre tes infos pour rejoindre tes camarades</p>
+        <form onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label for="username">Pseudo ou Prénom</label>
+                <input type="text" id="username" placeholder="Ex: Lucas" required>
+            </div>
+            <div class="form-group">
+                <label for="school">Ton Établissement</label>
+                <input type="text" id="school" placeholder="Ex: Lycée Henri Martin" required>
+            </div>
+            <div class="form-group">
+                <label for="role">Type de compte</label>
+                <select id="role">
+                    <option value="élève">Élève (Pour réviser)</option>
+                    <option value="admin">Administrateur (Pour gérer l'appli)</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Entrer sur l'application</button>
+        </form>
+    </div>
+
+    <div id="screen-home" class="screen">
+        <div class="header-status">
+            <span id="badge-user">👤 Pseudo</span>
+            <span id="badge-school">🏫 Établissement</span>
+        </div>
+        <h2>Tableau de bord</h2>
+        <p class="subtitle" style="margin-bottom:10px;">Tu peux explorer tous les niveaux, supérieurs ou inférieurs !</p>
+        
+        <div id="admin-banner" style="display:none; background:#fee2e2; border:1px solid #fca5a5; padding:10px; border-radius:10px; margin-bottom:15px; text-align:center;">
+            <strong style="color:#b91c1c;">Mode Administrateur Activé 🛠️</strong><br>
+            <button class="btn btn-admin" style="padding:5px 10px; font-size:0.85em; width:auto; margin-top:5px;" onclick="showScreen('screen-admin-panel')">Ouvrir le Panneau de Contrôle</button>
+        </div>
+
+        <div class="grid">
+            <button class="card-btn" onclick="selectClass('3ème')">3ème (Brevet)</button>
+            <button class="card-btn" onclick="selectClass('Seconde')">Seconde</button>
+            <button class="card-btn" onclick="selectClass('Première')">Première</button>
+            <button class="card-btn" onclick="selectClass('Terminale')">Terminale (Bac)</button>
+        </div>
+        <button class="btn btn-back" onclick="logout()">Déconnexion</button>
+    </div>
+
+    <div id="screen-subjects" class="screen">
+        <h2 id="title-level">Niveau</h2>
+        <p class="subtitle">Sélectionne ta matière ou une option spécifique</p>
+        
+        <div class="list-buttons" id="subjects-container">
+            </div>
+        <button class="btn btn-back" onclick="showScreen('screen-home')">← Changer de niveau</button>
+    </div>
+
+    <div id="screen-tools" class="screen">
+        <h2 id="title-tool-subject">Matière</h2>
+        <p class="subtitle">Que veux-tu faire aujourd'hui ?</p>
+        
+        <div class="grid">
+            <button class="card-btn" onclick="openTool('quiz')">📝 Quiz Interactifs</button>
+            <button class="card-btn" onclick="openTool('fiches')">📚 Fiches de révision</button>
+            <button class="card-btn" onclick="openTool('ia-prof')">🤖 Assistant IA Prof</button>
+            <button class="card-btn" onclick="openTool('ia-psy')">❤️ IA Écoute & Stress</button>
+        </div>
+        <button class="card-btn" style="width:100%; margin-top:12px; background:#e0f2fe;" onclick="openTool('chat')">💬 Chat d'entraide entre élèves</button>
+        
+        <button class="btn btn-back" onclick="showScreen('screen-subjects')">← Changer de matière</button>
+    </div>
+
+    <div id="screen-tool-chat" class="screen">
+        <h2>💬 Salon d'Entraide</h2>
+        <p class="subtitle">Discute, pose tes questions et respecte les autres.</p>
+        
+        <div class="chat-box" id="chat-messages-box">
+            <div class="chat-msg msg-other"><strong>Fanny :</strong> Quelqu'un a compris le chapitre sur la mole en STL ? 🧪</div>
+            <div class="chat-msg msg-other"><strong>Yanis :</strong> Grave, si tu veux je t'explique après !</div>
+        </div>
+        <div class="chat-input-zone">
+            <input type="text" id="chat-input-field" placeholder="Écris ton message d'entraide...">
+            <button class="btn btn-primary" onclick="sendChatMessage()">Envoyer</button>
+        </div>
+        <button class="btn btn-back" onclick="showScreen('screen-tools')">← Retour aux outils</button>
+    </div>
+
+    <div id="screen-tool-ia" class="screen">
+        <h2 id="ia-title">Assistant IA</h2>
+        <p class="subtitle" id="ia-subtitle">Pose ta question</p>
+        
+        <div class="chat-box" id="ia-messages-box">
+            </div>
+        <div class="chat-input-zone">
+            <input type="text" id="ia-input-field" placeholder="Pose ta question ici...">
+            <button class="btn btn-primary" onclick="sendIaMessage()">Demander</button>
+        </div>
+        <button class="btn btn-back" onclick="showScreen('screen-tools')">← Retour aux outils</button>
+    </div>
+
+    <div id="screen-tool-content" class="screen">
+        <h2 id="content-tool-title">Outil</h2>
+        <div id="content-body" style="background:#f1f5f9; padding:20px; border-radius:12px; margin:15px 0; min-height:100px;">
+            </div>
+        <button class="btn btn-back" onclick="showScreen('screen-tools')">← Retour aux outils</button>
+    </div>
+
+    <div id="screen-admin-panel" class="screen">
+        <h2 style="color:var(--admin-color);">🛠️ Panneau d'Administration</h2>
+        <p class="subtitle">Gestion des signalements et surveillance globale</p>
+        
+        <h3 style="text-align:left; font-size:1em;">🚨 Signalements récents du Chat :</h3>
+        <div style="background:#f1f5f9; padding:10px; border-radius:10px; font-size:0.9em; margin-bottom:15px;" id="admin-reports">
+            <div style="border-bottom:1px solid #cbd5e1; padding:5px 0; display:flex; justify-content:space-between; align-items:center;">
+                <span><strong>Maxime :</strong> "T'es trop nul abandonne la STL"</span>
+                <button class="btn-admin" style="padding:2px 6px; border-radius:4px; border:none; cursor:pointer;" onclick="simulatedBan('Maxime')">Ban 24h</button>
+            </div>
+            <p style="color:#64748b; font-style:italic; margin:5px 0 0 0;">Aucun autre signalement. L'IA de modération veille.</p>
+        </div>
+
+        <h3 style="text-align:left; font-size:1em;">🤖 Surveillance des Abus envers l'IA :</h3>
+        <div style="background:#f1f5f9; padding:10px; border-radius:10px; font-size:0.9em; color:#64748b; font-style:italic;">
+            Aucun abus d'insulte envers l'IA prof ou l'IA psy détecté aujourd'hui.
+        </div>
+
+        <button class="btn btn-back" onclick="showScreen('screen-home')">Retour à l'accueil</button>
+    </div>
+
+</div>
+
+<script>
+    // Variables globales de l'application
+    let user = { username: "", school: "", role: "élève" };
+    let selectedClass = "";
+    let selectedSubject = "";
+    let iaType = "prof"; // ou 'psy'
+
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    function handleLogin(e) {
+        e.preventDefault();
+        user.username = document.getElementById('username').value;
+        user.school = document.getElementById('school').value;
+        user.role = document.getElementById('role').value;
+
+        document.getElementById('badge-user').innerText = `👤 ${user.username} (${user.role})`;
+        document.getElementById('badge-school').innerText = `🏫 ${user.school}`;
+        
+        if(user.role === 'admin') {
+            document.getElementById('admin-banner').style.display = 'block';
+        } else {
+            document.getElementById('admin-banner').style.display = 'none';
+        }
+
+        showScreen('screen-home');
+    }
+
+    function logout() {
+        document.getElementById('username').value = "";
+        document.getElementById('school').value = "";
+        showScreen('screen-login');
+    }
+
+    function selectClass(className) {
+        selectedClass = className;
+        document.getElementById('title-level').innerText = `Niveau : ${className}`;
+        
+        // Liste des matières adaptée selon le niveau (intégration de Henri Martin & STL)
+        const container = document.getElementById('subjects-container');
+        let matieres = ["📐 Mathématiques", "🌍 Histoire-Géographie", "📚 Français", "🇬🇧 Anglais"];
+        
+        if(user.school.toLowerCase().includes('martin') || user.school.toLowerCase().includes('st q') || className === 'Première' || className === 'Terminale') {
+            if(className === 'Première' || className === 'Terminale') {
+                matieres.push("🧪 Spécialité STL (Sciences de Labo)");
+                matieres.push("🧬 Biochimie-Biologie");
+            }
+            if(className === 'Seconde') {
+                matieres.push("🔬 Option : Sciences et Laboratoire (Pré-STL)");
+            }
+        }
+
+        container.innerHTML = "";
+        matieres.forEach(m => {
+            container.innerHTML += `<button class="card-btn" onclick="selectSubject('${m}')">${m}</button>`;
+        });
+
+        showScreen('screen-subjects');
+    }
+
+    function selectSubject(subjectName) {
+        selectedSubject = subjectName;
+        document.getElementById('title-tool-subject').innerText = `${selectedClass} - ${selectedSubject}`;
+        showScreen('screen-tools');
+    }
+
+    function openTool(tool) {
+        if(tool === 'chat') {
+            showScreen('screen-tool-chat');
+        } else if(tool === 'ia-prof') {
+            iaType = 'prof';
+            document.getElementById('ia-title').innerText = "🤖 Mon Assistant IA Prof";
+            document.getElementById('ia-subtitle').innerText = "Pose-moi tes questions sur le cours, je t'aide à comprendre sans donner la réponse brute !";
+            document.getElementById('ia-messages-box').innerHTML = `<div class="chat-msg msg-ai"><strong>IA Prof :</strong> Salut ! Qu'est-ce que tu n'as pas compris dans le chapitre actuel en ${selectedSubject} ?</div>`;
+            showScreen('screen-tool-ia');
+        } else if(tool === 'ia-psy') {
+            iaType = 'psy';
+            document.getElementById('ia-title').innerText = "❤️ Espace Écoute & Bien-être";
+            document.getElementById('ia-subtitle').innerText = "Stressé par le Brevet, le Bac ou fatigué ? Parlons-en en toute sécurité.";
+            document.getElementById('ia-messages-box').innerHTML = `<div class="chat-msg msg-ai"><strong>IA Écoute :</strong> Bienvenue dans ton espace de décompression. Comment te sens-tu aujourd'hui ? Relâche la pression.</div>`;
+            showScreen('screen-tool-ia');
+        } else {
+            // Quiz et Fiches simulés
+            document.getElementById('content-tool-title').innerText = tool === 'quiz' ? "📝 Quiz d'entraînement" : "📚 Fiche de révision";
+            let bodyContent = tool === 'quiz' 
+                ? `<strong>Question 1 :</strong> Prêt pour tester tes connaissances sur le premier chapitre de ${selectedSubject} ?<br><br><button class="card-btn" style="padding:8px; font-size:0.9em;" onclick="alert('Bonne réponse !')">Lancer la première question</button>`
+                : `<h3>Chapitre 1 : Les bases essentielles</h3><p>Voici le résumé officiel conforme aux programmes pour ton niveau (${selectedClass}). Révise bien les définitions clés !</p>`;
+            document.getElementById('content-body').innerHTML = bodyContent;
+            showScreen('screen-tool-content');
+        }
+    }
+
+    // Gestion du Chat élève avec système anti-harcèlement (règles de modération)
+    function sendChatMessage() {
+        const input = document.getElementById('chat-input-field');
+        const text = input.value.trim();
+        if(!text) return;
+
+        const box = document.getElementById('chat-messages-box');
+        
+        // Ajout du message de l'utilisateur
+        // Si l'utilisateur est admin, on ajoute un bouton "Ban" à côté de son propre affichage pour simuler son pouvoir
+        let adminAction = user.role === 'admin' ? ` <span style="color:gray; font-size:0.8em;">(Moi)</span>` : "";
+        box.innerHTML += `<div class="chat-msg msg-user"><strong>${user.username} :</strong> ${text}${adminAction}</div>`;
+        
+        // Vérification des règles de modération
+        setTimeout(() => {
+            let lowerText = text.toLowerCase();
+            
+            // RÈGLE 1 : Petit "ta gueule" toléré sans violence extrême
+            if(lowerText.includes("ta gueule") && !lowerText.includes("tuer") && !lowerText.includes("menace")) {
+                box.innerHTML += `<div class="chat-msg msg-system">⚠️ [Alerte Modération] Langage familier détecté. Restez polis entre vous.</div>`;
+            }
+            // RÈGLE 2 : Menaces graves / Harcèlement répétitif
+            else if(lowerText.includes("tuer") || lowerText.includes("harcelement") || lowerText.includes("naze") || lowerText.includes("menace")) {
+                box.innerHTML += `<div class="chat-msg msg-system">🚨 [Avertissement Automatique] Propos violents ou menaces détectés. Ton compte va être banni si tu récidives !</div>`;
+                
+                // Si l'utilisateur est un élève, le signalement remonte immédiatement chez toi (l'admin)
+                if(user.role !== 'admin') {
+                    const reports = document.getElementById('admin-reports');
+                    reports.innerHTML = `<div style="border-bottom:1px solid #cbd5e1; padding:5px 0; display:flex; justify-content:space-between; align-items:center; background:#fee2e2;">
+                        <span><strong>${user.username} :</strong> "${text}"</span>
+                        <button class="btn-admin" style="padding:2px 6px; border-radius:4px; border:none; cursor:pointer;" onclick="simulatedBan('${user.username}')">Ban Immédiat</button>
+                    </div>` + reports.innerHTML;
+                }
+            }
+            box.scrollTop = box.scrollHeight;
+        }, 600);
+
+        input.value = "";
+    }
+
+    // Gestion de l'IA (Prof intelligente ou Psy)
+    function sendIaMessage() {
+        const input = document.getElementById('ia-input-field');
+        const text = input.value.trim();
+        if(!text) return;
+
+        const box = document.getElementById('ia-messages-box');
+        box.innerHTML += `<div class="chat-msg msg-user"><strong>Moi :</strong> ${text}</div>`;
+        
+        setTimeout(() => {
+            if(iaType === 'prof') {
+                box.innerHTML += `<div class="chat-msg msg-ai"><strong>IA Prof :</strong> C'est une bonne question sur le cours ! Je ne vais pas te donner la réponse toute faite pour ton devoir, mais réfléchis : quelle formule ou règle du chapitre de ${selectedSubject} devons-nous appliquer ici ? Reprenons l'étape 1 ensemble...</div>`;
+            } else {
+                box.innerHTML += `<div class="chat-msg msg-ai"><strong>IA Écoute :</strong> Je comprends tout à fait ce que tu ressens. C'est normal d'avoir des coups de stress à l'approche des examens. Respire un grand coup, prends une pause de 10 minutes, tu fais de ton mieux et c'est le principal. 😊</div>`;
+            }
+            box.scrollTop = box.scrollHeight;
+        }, 800);
+
+        input.value = "";
+    }
+
+    // Action d'administration (Bannissement simulé)
+    function simulatedBan(name) {
+        alert(`🔨 Action Admin : L'utilisateur [${name}] a été banni temporairement pendant 24h pour non-respect des règles de violence.`);
+    }
+</script>
+
+</body>
+</html>
