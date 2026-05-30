@@ -84,9 +84,11 @@
         .quiz-feedback.error { display: block; background: #ffebee; color: var(--danger); }
 
         /* Fiches de cours */
-        .fiche-item { background: #f1f5f9; padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid var(--primary); text-align: left; }
-        .fiche-item h4 { margin: 0 0 5px 0; color: var(--primary); }
-        .fiche-item p { margin: 0; font-size: 0.95em; line-height: 1.4; }
+        .fiche-item { background: #f1f5f9; padding: 18px; border-radius: 12px; margin-bottom: 15px; border-left: 4px solid var(--primary); text-align: left; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .fiche-item h4 { margin: 0 0 8px 0; color: var(--primary); font-size: 1.1em; }
+        .fiche-item p { margin: 0 0 10px 0; font-size: 0.95em; line-height: 1.5; color: #34495e; }
+        .fiche-item ul { margin: 0; padding-left: 20px; font-size: 0.95em; color: #34495e; line-height: 1.5; }
+        .fiche-item code { background: #e2e8f0; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 0.9em; color: #c0392b; }
     </style>
 </head>
 <body>
@@ -208,7 +210,7 @@
     let selectedSubject = "";
     let iaType = "prof";
 
-    // BASE DE DONNÉES AVEC PLUSIEURS LIGNES/CHAPITRES DE COURS PAR MATIÈRE
+    // BASE DE DONNÉES ENTIÈREMENT ENRICHIE AVEC DE VRAIS COURS COMPLETS ET PÉDAGOGIQUES
     const baseDonneesContenu = {
         "📐 Mathématiques": {
             quiz: {
@@ -218,8 +220,14 @@
                 explication: "La racine carrée de 9 est 3 car 3 x 3 = 9."
             },
             cours: [
-                { titre: "Chapitre 1 : Les Racines Carrées", texte: "La racine carrée d'un nombre est le nombre qui, multiplié par lui-même, donne ce nombre initial. Exemple : √9 = 3 car 3² = 9." },
-                { titre: "Chapitre 2 : Le Théorème de Pythagore", texte: "Dans un triangle rectangle, le carré de la longueur de l'hypoténuse est égal à la somme des carrés des longueurs des deux autres côtés : BC² = AB² + AC²." }
+                { 
+                    titre: "Chapitre 1 : Les Racines Carrées (Définition & Règles)", 
+                    texte: "La racine carrée d'un nombre positif <code>a</code> est le nombre positif, noté <code>√a</code>, dont le carré est égal à <code>a</code>. <br><br><b>Propriétés fondamentales indispensables à retenir :</b><ul><li><code>√(a × b) = √a × √b</code> (Vrai pour la multiplication)</li><li><code>√(a / b) = √a / √b</code> (Vrai pour la division, si b ≠ 0)</li><li><b>Attention :</b> <code>√(a + b)</code> n'est JAMAIS égal à <code>√a + √b</code> !</li></ul><br><i>Exemple concret :</i> <code>√16 = 4</code> car 4² = 16. De même, <code>√(4 × 9) = √4 × √9 = 2 × 3 = 6</code>." 
+                },
+                { 
+                    titre: "Chapitre 2 : Le Théorème de Pythagore (Calculer une longueur)", 
+                    texte: "<b>Énoncé officiel :</b> Dans un triangle rectangle, le carré de la longueur de l'hypoténuse (le côté le plus long opposé à l'angle droit) est égal à la somme des carrés des longueurs des deux autres côtés.<br><br><b>Formule :</b> Si un triangle ABC est rectangle en A, alors : <code>BC² = AB² + AC²</code>.<br><br><b>À quoi ça sert ?</b><ul><li>À calculer la longueur d'un troisième côté quand on connaît déjà les deux autres.</li><li>À utiliser sa réciproque pour démontrer si un triangle est rectangle ou non.</li></ul>" 
+                }
             ]
         },
         "🧪 Physique-Chimie": {
@@ -230,8 +238,14 @@
                 explication: "L'eau est composée de 2 atomes d'hydrogène et 1 atome d'oxygène, soit H2O."
             },
             cours: [
-                { titre: "Chapitre 1 : Molécules et Atomes", texte: "Une formule chimique représente la composition atomique d'une molécule. L'eau s'écrit H2O, le dioxyde de carbone s'écrit CO2." },
-                { titre: "Chapitre 2 : Les États de la Matière", texte: "La matière existe sous trois états physiques principaux : solide, liquide et gazeux. Les passages d'un état à un autre sont des changements d'état (ex: fusion, vaporisation)." }
+                { 
+                    titre: "Chapitre 1 : Constitution de l'atome et des molécules", 
+                    texte: "Un <b>atome</b> est la plus petite unité de matière, électriquement neutre. Il est composé d'un noyau central (contenant des protons chargés positivement et des neutrons neutres) autour duquel gravite un nuage d'électrons (chargés négativement).<br><br>Une <b>molécule</b> est un assemblage d'atomes liés entre eux par des liaisons chimiques.<br><br><b>Exemples de formules chimiques à savoir par cœur :</b><ul><li>Eau : <code>H2O</code> (2 atomes d'Hydrogène, 1 atome d'Oxygène)</li><li>Dioxyde de carbone : <code>CO2</code> (1 atome de Carbone, 2 atomes d'Oxygène)</li><li>Dioxygène : <code>O2</code> (2 atomes d'Oxygène)</li></ul>" 
+                },
+                { 
+                    titre: "Chapitre 2 : Les transformations chimiques et équations", 
+                    texte: "Lors d'une transformation chimique, les substances qui disparaissent sont les <b>réactifs</b>, et les nouvelles substances formées sont les <b>produits</b>.<br><br><b>Loi de conservation (Lavoisier) :</b> 'Rien ne se perd, rien ne se crée, tout se transforme'. Le nombre total d'atomes de chaque élément doit être strictement le même avant et après la réaction. C'est pour cela qu'on doit équilibrer une équation chimique à l'aide de coefficients stœchiométriques.<br><br><i>Exemple équilibré :</i> <code>C + O2 → CO2</code> ou encore <code>2H2 + O2 → 2H2O</code>." 
+                }
             ]
         },
         "🌱 SVT": {
@@ -242,8 +256,14 @@
                 explication: "Le cœur agit comme une pompe musculaire centrale pour faire circuler le sang."
             },
             cours: [
-                { titre: "Chapitre 1 : Le Système Cardiovasculaire", texte: "Il permet l'apport de nutriments et de dioxygène aux organes. Le cœur en est le moteur principal en agissant comme une pompe." },
-                { titre: "Chapitre 2 : La Génétique et l'ADN", texte: "L'ADN est le support de l'information génétique. Il est localisé dans le noyau des cellules et structuré sous forme de chromosomes." }
+                { 
+                    titre: "Chapitre 1 : Le rythme cardiaque et l'effort physique", 
+                    texte: "Lors d'un effort physique, les muscles ont besoin de consommer davantage d'énergie. Pour répondre à ce besoin, l'organisme accélère ses processus :<ul><li>La <b>fréquence cardiaque</b> augmente (le cœur bat plus vite pour éjecter le sang).</li><li>La <b>fréquence respiratoire</b> augmente (les poumons captent plus de dioxygène <code>O2</code> et rejettent plus de <code>CO2</code>).</li></ul>Le sang sert de transporteur rapide pour acheminer le dioxygène et les nutriments (glucose) jusqu'aux muscles en activité." 
+                },
+                { 
+                    titre: "Chapitre 2 : Génétique - Chromosomes et ADN", 
+                    texte: "Chaque cellule de notre corps contient une information génétique logée dans son noyau.<ul><li>Les <b>chromosomes</b> sont des structures microscopiques en forme de bâtonnets visibles lors de la division cellulaire. L'espèce humaine en possède 23 paires (46 au total).</li><li>L'<b>ADN</b> (Acide Désoxyribonucléique) est la longue molécule en double hélice qui constitue les chromosomes.</li><li>Un <b>gène</b> est une portion d'ADN qui porte une instruction précise déterminant un caractère héréditaire.</li></ul>" 
+                }
             ]
         },
         "🤖 Technologie": {
@@ -254,8 +274,14 @@
                 explication: "Le disque dur ou le SSD conserve les fichiers même lorsque l'ordinateur est éteint."
             },
             cours: [
-                { titre: "Chapitre 1 : L'Architecture d'un Ordinateur", texte: "On distingue la mémoire vive (RAM), qui s'efface à l'extinction, et la mémoire de stockage (HDD, SSD) qui conserve les fichiers à long terme." },
-                { titre: "Chapitre 2 : Les Réseaux et IP", texte: "Une adresse IP permet d'identifier de manière unique une machine sur un réseau informatique pour lui permettre de communiquer." }
+                { 
+                    titre: "Chapitre 1 : Composants internes d'un ordinateur", 
+                    texte: "Un ordinateur fonctionne grâce à la synergie de plusieurs composants matériels essentiels (Hardware) :<ul><li><b>Le Processeur (CPU) :</b> Le cerveau de la machine. Il exécute les instructions des programmes.</li><li><b>La Mémoire Vive (RAM) :</b> Mémoire ultra-rapide mais temporaire. Elle s'efface complètement à l'extinction.</li><li><b>Le Disque dur (HDD) ou SSD :</b> Mémoire de stockage de masse. Conserve tes fichiers, photos et le système d'exploitation de manière permanente.</li><li><b>La Carte Mère :</b> Le circuit imprimé principal qui interconnecte tous les composants.</li></ul>" 
+                },
+                { 
+                    titre: "Chapitre 2 : Comprendre le fonctionnement d'un réseau", 
+                    texte: "Pour communiquer entre eux, les équipements informatiques (ordinateurs, serveurs, téléphones) doivent être connectés en réseau via des câbles Ethernet ou des ondes Wi-Fi.<br><br><b>Éléments clés d'un réseau :</b><ul><li><b>Le Routeur :</b> Dirige les paquets de données entre différents réseaux (par exemple entre ta maison et Internet).</li><li><b>L'Adresse IP :</b> Une suite de chiffres unique attribuée à chaque machine sur le réseau pour pouvoir l'identifier et lui envoyer des données (ex: <code>192.168.1.1</code>).</li></ul>" 
+                }
             ]
         },
         "🌍 Histoire-Géographie": {
@@ -266,8 +292,14 @@
                 explication: "La Première Guerre mondiale a commencé en août 1914 suite à l'attentat de Sarajevo."
             },
             cours: [
-                { titre: "Chapitre 1 : La Première Guerre Mondiale", texte: "La Grande Guerre (1914-1918) est caractérisée par la violence de masse et le passage d'une guerre de mouvement à une guerre de position (tranchées)." },
-                { titre: "Chapitre 2 : Les Espaces Productifs en France", texte: "Un espace productif est un territoire aménagé et mis en valeur pour développer une activité économique (agricole, industrielle ou tertiaire)." }
+                { 
+                    titre: "Chapitre 1 : La Première Guerre Mondiale (1914-1918)", 
+                    texte: "La Première Guerre mondiale est qualifiée de <b>guerre totale</b> car elle mobilise l'intégralité des ressources économiques, technologiques et humaines des États.<br><br><b>Chronologie et notions fondamentales :</b><ul><li><b>1914 :</b> Phase initiale de guerre de mouvement, suivie d'un enlisement.</li><li><b>1915-1917 :</b> La guerre de position ou guerre des tranchées. Les conditions de vie des soldats ('les Poilus') y sont inhumaines. La bataille de Verdun (1916) en devient le symbole.</li><li><b>Tournant de 1917 :</b> Entrée en guerre des États-Unis et retrait de la Russie suite aux révolutions russes.</li><li><b>11 Novembre 1918 :</b> Signature de l'armistice.</li></ul>" 
+                },
+                { 
+                    titre: "Chapitre 2 : Les espaces productifs français et leur évolution", 
+                    texte: "Un <b>espace productif</b> est une partie du territoire aménagée et mise en valeur pour la création de richesses économiques.<br><br>On distingue trois grandes catégories d'espaces :<ul><li><b>Espaces agricoles :</b> Modernisés et intégrés à l'agroalimentaire, spécialisés (ex: la Beauce pour les céréales, le Bordelais pour la viticulture).</li><li><b>Espaces industriels :</b> Mutation des anciennes régions du Nord/Est vers les grandes métropoles et les technopôles du Sud et de l'Ouest (Aéronautique à Toulouse).</li><li><b>Espaces tertiaires :</b> Dominants aujourd'hui, concentrés dans les grands centres-villes (quartiers d'affaires comme La Défense à Paris) et les zones touristiques.</li></ul>" 
+                }
             ]
         },
         "📚 Français": {
@@ -278,8 +310,14 @@
                 explication: "'Magnifique' sert à qualifier un nom, c'est donc un adjectif."
             },
             cours: [
-                { titre: "Chapitre 1 : Les Classes Grammaticales", texte: "L'adjectif qualificatif s'accorde en genre et en nombre avec le nom auquel il se rapporte et lui apporte des précisions." },
-                { titre: "Chapitre 2 : Les Figures de Style", texte: "La métaphore et la comparaison lient deux éléments. La comparaison utilise un outil de comparaison (comme, tel que), contrairement à la métaphore." }
+                { 
+                    titre: "Chapitre 1 : Distinguer Nature et Fonction grammaticale", 
+                    texte: "C'est l'erreur la plus fréquente en analyse de texte ! Il faut impérativement séparer ces deux concepts :<ul><li><b>La Nature (ou classe grammaticale) :</b> C'est l'identité fixe d'un mot, ce qu'il est inscrit dans le dictionnaire (ex: un nom, un verbe, un déterminant, un adjectif, un pronom). Elle ne change jamais.</li><li><b>La Fonction :</b> C'est le rôle joué par le mot ou le groupe de mots dans une phrase spécifique (ex: sujet, complément d'objet direct (COD), complément circonstanciel de temps, attribut du sujet). Elle dépend de la construction de la phrase.</li></ul>" 
+                },
+                { 
+                    titre: "Chapitre 2 : Les Figures de Style incontournables", 
+                    texte: "Les figures de style permettent d'enrichir un texte en créant des images ou des effets d'insistance :<ul><li><b>La Comparaison :</b> Rapproche deux éléments avec un outil de comparaison (comme, tel que, semblable à). <i>Ex: Elle est rapide comme l'éclair.</i></li><li><b>La Métaphore :</b> Rapproche deux éléments sans outil de comparaison. <i>Ex: Cet homme est un lion.</i></li><li><b>L'Hyperbole :</b> Une exagération volontaire pour frapper les esprits. <i>Ex: Je meurs de soif.</i></li><li><b>La Personnification :</b> Attribuer des traits humains à un objet ou un animal. <i>Ex: Le vent hurle dans la nuit.</i></li></ul>" 
+                }
             ]
         },
         "🇬🇧 Anglais": {
@@ -290,8 +328,14 @@
                 explication: "Le verbe 'to go' est irrégulier : prétérit = went, participe passé = gone."
             },
             cours: [
-                { titre: "Chapitre 1 : Le Prétérit Simple", texte: "Le prétérit s'utilise pour des actions passées, terminées et coupées du présent. Pour les verbes réguliers, on ajoute le suffixe -ed." },
-                { titre: "Chapitre 2 : Les Verbes Irréguliers", texte: "Les verbes irréguliers changent de forme au prétérit et au participe passé. Ils doivent être appris par cœur (ex: buy -> bought -> bought)." }
+                { 
+                    titre: "Chapitre 1 : Le Prétérit Simple (Past Simple)", 
+                    texte: "Le prétérit simple est le temps du passé par excellence en anglais. On l'utilise pour exprimer une action passée, datée, complètement terminée et déconnectée du moment présent.<br><br><b>Règles de conjugaison :</b><ul><li><b>Verbes réguliers :</b> On ajoute simplement la terminaison <code>-ed</code> à la base verbale. <i>Ex: play → played / watch → watched.</i></li><li><b>Verbes irréguliers :</b> Ils possèdent une forme propre qu'il faut apprendre par cœur (deuxième colonne de ta liste). <i>Ex: go → went / buy → bought / see → saw.</i></li></ul>" 
+                },
+                { 
+                    titre: "Chapitre 2 : Exprimer le futur en anglais", 
+                    texte: "Il existe deux façons principales d'exprimer une action future selon le contexte :<ul><li><b>WILL + Base Verbale :</b> Utilisé pour une prédiction générale, une décision prise sur le vif ou un événement certain indépendant de notre volonté. <i>Ex: It will rain tomorrow.</i></li><li><b>BE GOING TO + Base Verbale :</b> Utilisé pour exprimer une intention ferme, un projet planifié à l'avance, ou une prédiction basée sur un indice visible immédiatement. <i>Ex: Look at those clouds, it is going to rain!</i></li></ul>" 
+                }
             ]
         },
         "🧪 Spécialité STL (Sciences de Labo)": {
@@ -302,8 +346,14 @@
                 explication: "La verrerie jaugée (comme la fiole jaugée) garantit la mesure de volume la plus précise en laboratoire."
             },
             cours: [
-                { titre: "Chapitre 1 : La Verrerie de Précision", texte: "En biochimie et chimie de laboratoire, l'utilisation rigoureuse de la verrerie fine (pipettes, fioles jaugées) évite le cumul d'incertitudes." },
-                { titre: "Chapitre 2 : Les Préparations de Solutions", texte: "La dissolution consiste à dissoudre un soluté solide dans un solvant. La dilution consiste à ajouter du solvant pour diminuer la concentration d'une solution mère." }
+                { 
+                    titre: "Chapitre 1 : Verrerie et incertitudes de mesures", 
+                    texte: "En laboratoire de chimie et de biochimie, le choix de la verrerie dépend de la manipulation effectuée :<ul><li><b>Le Bécher et l'Erlenmeyer :</b> Ne servent qu'à contenir, stocker ou transvaser des liquides. Leurs graduations ne sont PAS précises.</li><li><b>L'Éprouvette graduée :</b> Utile pour mesurer des volumes approximatifs courants.</li><li><b>La Verrerie Jaugée (Fiole jaugée, pipette jaugée) :</b> Les seuls outils permettant de mesurer un volume fixe de manière extrêmement précise grâce à leur trait de jauge fin. Indispensables pour les dosages et fabrications de solutions étalons.</li></ul>" 
+                },
+                { 
+                    titre: "Chapitre 2 : Protocoles de Dissolution et Dilution", 
+                    texte: "<b>1. La Dissolution :</b> Consiste à préparer une solution en dissolvant un soluté solide dans un solvant liquide.<br><i>Calcul clé :</i> Masse de soluté à peser : <code>m = C × V × M</code>.<br><br><b>2. La Dilution :</b> Consiste à préparer une solution fille moins concentrée à partir d'une solution mère.<br><i>Loi de conservation :</i> La quantité de matière de soluté reste identique : <code>C_mère × V_mère = C_fille × V_fille</code>.<br>Le facteur de dilution s'exprime ainsi : <code>F = C_mère / C_fille = V_fille / V_mère</code>." 
+                }
             ]
         }
     };
@@ -410,12 +460,12 @@
                     body.innerHTML = `<h3>${selectedSubject}</h3><p>Aucun quiz disponible pour le moment.</p>`;
                 }
             } else {
-                // AFFICHAGE DYNAMIQUE DES MULTIPLES FICHES DE COURS
+                // AFFICHAGE DES MULTIPLES VRAIS COURS COMPLETS ET LISEZ SANS SOUCI
                 document.getElementById('content-tool-title').innerText = "📚 Fiches de Révision";
                 let data = baseDonneesContenu[selectedSubject];
                 
                 if (data && Array.isArray(data.cours)) {
-                    let fichesHtml = `<h3>${selectedSubject}</h3><p class="subtitle">Sélectionne un chapitre pour réviser :</p>`;
+                    let fichesHtml = `<h3>${selectedSubject}</h3><p class="subtitle" style="margin-bottom:15px;">Fiches de révision de référence :</p>`;
                     data.cours.forEach(fiche => {
                         fichesHtml += `
                             <div class="fiche-item">
@@ -426,7 +476,7 @@
                     });
                     body.innerHTML = fichesHtml;
                 } else {
-                    body.innerHTML = `<h3>${selectedSubject}</h3><p>Aucune fiche de cours disponible pour le moment.</p>`;
+                    body.innerHTML = `<h3>${selectedSubject}</h3><p>Aucune fiche de cours rédigée pour le moment.</p>`;
                 }
             }
             showScreen('screen-tool-content');
