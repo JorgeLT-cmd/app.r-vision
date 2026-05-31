@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Révision 3ème 2nd 1ère Terminale</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --primary: #4a6fa5;
@@ -45,8 +46,8 @@
         /* Formulaires */
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9em; }
-        input, select, textarea { width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; box-sizing: border-box; outline: none; font-size: 1em; font-family: inherit; }
-        input:focus, select:focus, textarea:focus { border-color: var(--primary); }
+        input, select { width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; box-sizing: border-box; outline: none; font-size: 1em; }
+        input:focus, select:focus { border-color: var(--primary); }
 
         /* Boutons */
         .btn { width: 100%; padding: 14px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1em; transition: all 0.2s; margin-top: 5px; }
@@ -54,7 +55,7 @@
         .btn-primary:hover { background: var(--primary-hover); }
         .btn-admin { background: var(--admin-color); color: white; }
         .btn-back { background: #edf2f7; color: #4a5568; margin-top: 15px; }
-        .btn-edit { background: #e2e8f0; color: #4a5568; padding: 6px 12px; font-size: 0.85em; width: auto; border-radius: 6px; cursor: pointer; border: none; font-weight: bold; }
+        .btn-link { background: none; border: none; color: var(--primary); font-weight: bold; cursor: pointer; text-decoration: underline; padding: 5px; font-size: 0.9em; width: 100%; text-align: center; }
 
         /* Écrans */
         .screen { display: none; }
@@ -87,11 +88,10 @@
         /* Fiches et cours */
         .content-scroll { max-height: 400px; overflow-y: auto; padding-right: 5px; }
         .chapter-box { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .chapter-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f1f5f9; padding-bottom: 5px; margin-bottom: 10px; }
-        .chapter-title { margin: 0; color: var(--primary); font-size: 1.1em; font-weight: bold; }
+        .chapter-title { margin: 0 0 10px 0; color: var(--primary); font-size: 1.1em; border-bottom: 2px solid #f1f5f9; padding-bottom: 5px; text-align: left; }
         
-        .fiche-view { background: #fffdf5; border: 2px dashed #e6c875; padding: 12px; border-radius: 8px; font-size: 0.9em; white-space: pre-line; }
-        .cours-view { background: #f8fafc; border-left: 4px solid #94a3b8; padding: 12px; border-radius: 4px; font-size: 0.95em; line-height: 1.5; text-align: justify; white-space: pre-line; }
+        .fiche-view { background: #fffdf5; border: 2px dashed #e6c875; padding: 12px; border-radius: 8px; font-size: 0.9em; }
+        .cours-view { background: #f8fafc; border-left: 4px solid #94a3b8; padding: 12px; border-radius: 4px; font-size: 0.95em; line-height: 1.5; text-align: justify; }
 
         /* Feedback Quiz */
         .quiz-feedback { margin-top: 15px; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; display: none; }
@@ -104,35 +104,54 @@
 <div class="app-container">
 
     <div id="screen-login" class="screen active">
-        <h1>Révision 3ème 2nd 1ère Terminale</h1>
-        <p class="subtitle">Entre tes infos pour rejoindre tes camarades</p>
+        <h1>Révision Scolaire</h1>
+        <p class="subtitle">Connecte-toi pour retrouver tes cours et tes badges</p>
         <form onsubmit="handleLogin(event)">
             <div class="form-group">
-                <label for="username">Pseudo ou Prénom</label>
-                <input type="text" id="username" placeholder="Ex: Lucas" required>
+                <label for="login-email">Adresse Email</label>
+                <input type="email" id="login-email" placeholder="Ex: lucas@gmail.com" required>
             </div>
             <div class="form-group">
-                <label for="school">Ton Établissement</label>
-                <input type="text" id="school" placeholder="Ex: Lycée Henri Martin" required>
+                <label for="login-password">Mot de passe</label>
+                <input type="password" id="login-password" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Se connecter</button>
+            <button type="button" class="btn-link" onclick="toggleAuthScreens('register')">Pas encore de compte ? S'inscrire</button>
+        </form>
+    </div>
+
+    <div id="screen-register" class="screen">
+        <h1>Créer un compte</h1>
+        <p class="subtitle">Rejoins l'application de révision</p>
+        <form onsubmit="handleRegister(event)">
+            <div class="form-group">
+                <label for="reg-username">Pseudo ou Prénom</label>
+                <input type="text" id="reg-username" placeholder="Ex: Lucas" required>
             </div>
             <div class="form-group">
-                <label for="role">Type de compte</label>
-                <select id="role">
-                    <option value="élève">Élève (Pour réviser)</option>
-                    <option value="admin">Administrateur (Pour gérer l'appli)</option>
-                </select>
+                <label for="reg-school">Ton Établissement</label>
+                <input type="text" id="reg-school" placeholder="Ex: Lycée Henri Martin" required>
             </div>
-            <button type="submit" class="btn btn-primary">Entrer sur l'application</button>
+            <div class="form-group">
+                <label for="reg-email">Adresse Email</label>
+                <input type="email" id="reg-email" placeholder="Ex: lucas@gmail.com" required>
+            </div>
+            <div class="form-group">
+                <label for="reg-password">Mot de passe</label>
+                <input type="password" id="reg-password" placeholder="Minimum 6 caractères" minlength="6" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Créer mon compte</button>
+            <button type="button" class="btn-link" onclick="toggleAuthScreens('login')">Déjà inscrit ? Se connecter</button>
         </form>
     </div>
 
     <div id="screen-home" class="screen">
         <div class="header-status">
-            <span id="badge-user">👤 Pseudo</span>
+            <span id="badge-user">👤 Utilisateur</span>
             <span id="badge-school">🏫 Établissement</span>
         </div>
         <h2>Tableau de bord</h2>
-        <p class="subtitle" style="margin-bottom:10px;">Tu peux explorer tous les niveaux !</p>
+        <p class="subtitle" style="margin-bottom:10px;">Explore tous les niveaux disponibles</p>
         
         <div id="admin-banner" style="display:none; background:#fee2e2; border:1px solid #fca5a5; padding:10px; border-radius:10px; margin-bottom:15px; text-align:center;">
             <strong style="color:#b91c1c;">Mode Administrateur Activé 🛠️</strong><br>
@@ -150,7 +169,7 @@
 
     <div id="screen-subjects" class="screen">
         <h2 id="title-level">Niveau</h2>
-        <p class="subtitle">Sélectionne ta matière ou une option spécifique</p>
+        <p class="subtitle">Sélectionne ta matière</p>
         
         <div class="list-buttons" id="subjects-container"></div>
         <button class="btn btn-back" onclick="showScreen('screen-home')">← Changer de niveau</button>
@@ -173,14 +192,10 @@
 
     <div id="screen-tool-chat" class="screen">
         <h2>💬 Salon d'Entraide</h2>
-        <p class="subtitle">Discute, pose tes questions et respecte les autres.</p>
-        
-        <div class="chat-box" id="chat-messages-box">
-            <div class="chat-msg msg-other"><strong>Fanny :</strong> Quelqu'un a compris le chapitre sur la mole en STL ? 🧪</div>
-            <div class="chat-msg msg-other"><strong>Yanis :</strong> Grave, si tu veux je t'explique après !</div>
-        </div>
+        <p class="subtitle">Discute en temps réel avec les autres élèves</p>
+        <div class="chat-box" id="chat-messages-box"></div>
         <div class="chat-input-zone">
-            <input type="text" id="chat-input-field" placeholder="Écris ton message d'entraide...">
+            <input type="text" id="chat-input-field" placeholder="Écris ton message...">
             <button class="btn btn-primary" onclick="sendChatMessage()">Envoyer</button>
         </div>
         <button class="btn btn-back" onclick="showScreen('screen-tools')">← Retour aux outils</button>
@@ -189,7 +204,6 @@
     <div id="screen-tool-ia" class="screen">
         <h2 id="ia-title">Assistant IA</h2>
         <p class="subtitle" id="ia-subtitle">Pose ta question</p>
-        
         <div class="chat-box" id="ia-messages-box"></div>
         <div class="chat-input-zone">
             <input type="text" id="ia-input-field" placeholder="Pose ta question ici...">
@@ -200,106 +214,49 @@
 
     <div id="screen-tool-content" class="screen">
         <h2 id="content-tool-title">Outil</h2>
-        
         <div id="tabs-zone" class="tool-tabs" style="display:none;">
             <button id="tab-btn-fiches" class="tab-btn active" onclick="switchTab('fiches')">📋 Fiches Révision (A5)</button>
             <button id="tab-btn-cours" class="tab-btn" onclick="switchTab('cours')">📖 Cours Complets (A4)</button>
         </div>
-
         <div id="content-body" style="background:#f1f5f9; padding:20px; border-radius:12px; margin:15px 0; min-height:100px;"></div>
         <button class="btn btn-back" onclick="showScreen('screen-tools')">← Retour aux outils</button>
     </div>
 
-    <div id="screen-edit-chapter" class="screen">
-        <h2>📝 Édition du Chapitre</h2>
-        <p class="subtitle" id="edit-chapter-subtitle">Modifie le contenu</p>
-        
-        <div class="form-group">
-            <label for="edit-title">Titre du Chapitre</label>
-            <input type="text" id="edit-title">
-        </div>
-        <div class="form-group">
-            <label for="edit-fiche">Contenu de la Fiche Révision (Format court A5)</label>
-            <textarea id="edit-fiche" rows="4" placeholder="Ex: • Point 1&#10;• Définition..."></textarea>
-        </div>
-        <div class="form-group">
-            <label for="edit-cours">Contenu du Cours Complet (Format long A4)</label>
-            <textarea id="edit-cours" rows="8" placeholder="Rédige les détails théoriques du cours ici..."></textarea>
-        </div>
-        
-        <button class="btn btn-primary" onclick="saveEditedChapter()">💾 Sauvegarder les modifications</button>
-        <button class="btn btn-back" onclick="openTool('fiches')">Annuler</button>
-    </div>
-
     <div id="screen-admin-panel" class="screen">
         <h2 style="color:var(--admin-color);">🛠️ Panneau d'Administration</h2>
-        <p class="subtitle">Gestion globale</p>
+        <p class="subtitle">Gestion et maintenance</p>
         <button class="btn btn-back" onclick="showScreen('screen-home')">Retour à l'accueil</button>
     </div>
 
 </div>
 
 <script>
-    let user = { username: "", school: "", role: "élève" };
+    // =======================================================
+    // ⚠️ CONFIGURATION SUPABASE (À Remplir à l'Étape 2)
+    // =======================================================
+    const SUPABASE_URL = "METS_TON_URL_ICI";
+    const SUPABASE_ANON_KEY = "METS_TA_CLE_ANON_ICI";
+    
+    // Initialisation du client Supabase
+    const supabase = (SUPABASE_URL !== "METS_TON_URL_ICI") ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+    // Variables d'état de l'application
+    let currentUserData = null;
     let selectedClass = "";
     let selectedSubject = "";
     let iaType = "prof";
     let currentTab = "fiches";
-    let editingChapterIndex = null;
-
-    // Fonction d'initialisation par défaut d'une matière avec ses 13 chapitres
-    function generer13ChapitresVides(nomMatiere) {
-        let list = [];
-        for (let i = 1; i <= 13; i++) {
-            list.push({
-                titre: `Chapitre ${i} : [Titre à compléter]`,
-                fiche: `• Essentiel du Chapitre ${i}\n• Formules et notions clés à retenir au format A5.\n• [Cliquez sur modifier en haut à droite pour éditer]`,
-                cours: `Espace complet dédié au cours de ${nomMatiere} (Chapitre ${i}).\nVous pouvez y coller ou y rédiger vos 3 à 5 pages de texte théorique explicatif.`
-            });
-        }
-        return list;
-    }
-
-    // Structure de base globale de l'application
-    let baseDonneesContenu = {
-        "📐 Mathématiques": {
-            quiz: { question: "Quelle est la racine carrée de 9 ?", options: ["3", "6", "9", "81"], reponse: 0, explication: "3 x 3 = 9." },
-            chapitres: generer13ChapitresVides("Mathématiques")
-        },
-        "🧪 Physique-Chimie": {
-            quiz: { question: "Quelle est la formule de l'eau ?", options: ["CO2", "H2O", "O2", "NaCl"], reponse: 1, explication: "L'eau correspond à H2O." },
-            chapitres: generer13ChapitresVides("Physique-Chimie")
-        },
-        "🌱 SVT": {
-            quiz: { question: "Où se trouve majoritairement l'ADN ?", options: ["Dans le noyau", "Dans le sang", "Dans le cytoplasme"], reponse: 0, explication: "L'ADN est confiné dans le noyau." },
-            chapitres: generer13ChapitresVides("SVT")
-        },
-        "🤖 Technologie": {
-            quiz: { question: "Quel composant sauvegarde de façon permanente ?", options: ["RAM", "Processeur", "Disque dur / SSD"], reponse: 2, explication: "Le stockage non volatile garde les données." },
-            chapitres: generer13ChapitresVides("Technologie")
-        },
-        "🌍 Histoire-Géographie": {
-            quiz: { question: "En quelle année débute la Première Guerre mondiale ?", options: ["1914", "1939", "1945"], reponse: 0, explication: "Le conflit s'est déclenché en 1914." },
-            chapitres: generer13ChapitresVides("Histoire-Géographie")
-        },
-        "📚 Français": {
-            quiz: { question: "Quelle est la nature du mot 'magnifique' ?", options: ["Nom", "Verbe", "Adjectif"], reponse: 2, explication: "C'est un adjectif qualificatif." },
-            chapitres: generer13ChapitresVides("Français")
-        },
-        "🇬🇧 Anglais": {
-            quiz: { question: "Quel est le prétérit de 'to go' ?", options: ["Goed", "Went", "Gone"], reponse: 1, explication: "Go est irrégulier : go -> went." },
-            chapitres: generer13ChapitresVides("Anglais")
-        },
-        "🧪 Spécialité STL (Sciences de Labo)": {
-            quiz: { question: "Quelle verrerie offre la meilleure justesse ?", options: ["Bécher", "Éprouvette", "Fiole jaugée"], reponse: 2, explication: "La fiole jaugée permet une mesure précise de volume fixe." },
-            chapitres: generer13ChapitresVides("Spécialité STL")
+    
+    // Vérification de session automatique au démarrage
+    window.onload = async function() {
+        if (supabase) {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                // L'utilisateur est déjà connecté, on récupère son profil
+                fetchUserProfile(session.user.id);
+            }
         }
     };
-
-    // Chargement automatique des données sauvegardées par l'utilisateur s'il y en a
-    if(localStorage.getItem("app_revision_data")) {
-        baseDonneesContenu = JSON.parse(localStorage.getItem("app_revision_data"));
-    }
 
     function showScreen(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -307,42 +264,110 @@
         document.getElementById('tabs-zone').style.display = 'none';
     }
 
-    function handleLogin(e) {
+    function toggleAuthScreens(type) {
+        if(type === 'register') showScreen('screen-register');
+        else showScreen('screen-login');
+    }
+
+    // =======================================================
+    // GESTION DE L'AUTHENTIFICATION AVEC SUPABASE
+    // =======================================================
+    async function handleRegister(e) {
         e.preventDefault();
-        const selectedRole = document.getElementById('role').value;
-        if (selectedRole === 'admin') {
-            const password = prompt("Entrez le mot de passe administrateur :");
-            if (password !== "AdmiN123nF") {
-                alert("Accès refusé !");
-                return;
+        if (!supabase) { alert("Supabase n'est pas configuré !"); return; }
+        
+        const username = document.getElementById('reg-username').value;
+        const school = document.getElementById('reg-school').value;
+        const email = document.getElementById('reg-email').value;
+        const password = document.getElementById('reg-password').value;
+
+        // 1. Inscription dans Supabase Auth
+        const { data, error } = await supabase.auth.signUp({ email, password });
+
+        if (error) {
+            alert("Erreur d'inscription : " + error.message);
+            return;
+        }
+
+        if (data.user) {
+            // 2. Création du profil personnalisé dans une table "profiles"
+            const { error: profileError } = await supabase
+                .from('profiles')
+                .insert([{ id: data.user.id, username: username, school: school, role: 'élève' }]);
+
+            if (profileError) {
+                alert("Erreur profil : " + profileError.message);
+            } else {
+                alert("Compte créé avec succès ! Vérifie tes emails si une validation est demandée.");
+                fetchUserProfile(data.user.id);
             }
         }
-        user.username = document.getElementById('username').value;
-        user.school = document.getElementById('school').value;
-        user.role = selectedRole;
+    }
 
-        document.getElementById('badge-user').innerText = `👤 ${user.username} (${user.role})`;
-        document.getElementById('badge-school').innerText = `🏫 ${user.school}`;
-        
-        document.getElementById('admin-banner').style.display = (user.role === 'admin') ? 'block' : 'none';
+    async function handleLogin(e) {
+        e.preventDefault();
+        if (!supabase) { 
+            // Mode démo sans base de données pour tester le visuel
+            currentUserData = { username: "Démo", school: "Lycée Test", role: "élève" };
+            setupDashboard();
+            return; 
+        }
+
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+        if (error) {
+            alert("Connexion échouée : " + error.message);
+        } else if (data.user) {
+            fetchUserProfile(data.user.id);
+        }
+    }
+
+    async function fetchUserProfile(userId) {
+        if (!supabase) return;
+        const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
+        if (data) {
+            currentUserData = data;
+            setupDashboard();
+        } else {
+            // Si le mot de passe admin secret est utilisé par exemple
+            if(confirm("Créer un profil admin pour ce compte ?")) {
+                const passwordAdmin = prompt("Code secret admin :");
+                if(passwordAdmin === "AdmiN123nF") {
+                    await supabase.from('profiles').insert([{ id: userId, username: "Admin", school: "Système", role: 'admin' }]);
+                    window.location.reload();
+                }
+            }
+        }
+    }
+
+    function setupDashboard() {
+        document.getElementById('badge-user').innerText = `👤 ${currentUserData.username} (${currentUserData.role})`;
+        document.getElementById('badge-school').innerText = `🏫 ${currentUserData.school}`;
+        document.getElementById('admin-banner').style.display = (currentUserData.role === 'admin') ? 'block' : 'none';
         showScreen('screen-home');
     }
 
-    function logout() {
-        document.getElementById('username').value = "";
-        document.getElementById('school').value = "";
+    async function logout() {
+        if (supabase) await supabase.auth.signOut();
+        currentUserData = null;
         showScreen('screen-login');
     }
 
+    // =======================================================
+    // NAVIGATION ET INTERFACE
+    // =======================================================
     function selectClass(className) {
         selectedClass = className;
         document.getElementById('title-level').innerText = `Niveau : ${className}`;
         
         const container = document.getElementById('subjects-container');
-        let matieres = ["📐 Mathématiques", "🧪 Physique-Chimie", "🌱 SVT", "🤖 Technologie", "🌍 Histoire-Géographie", "📚 Français", "🇬🇧 Anglais"];
+        let matieres = ["📐 Mathématiques", "📚 Français", "🧪 Physique-Chimie", "🌱 SVT", "🤖 Technologie", "🌍 Histoire-Géographie", "🇬🇧 Anglais"];
         
-        if(user.school.toLowerCase().includes('martin') || user.school.toLowerCase().includes('st q') || className === 'Première' || className === 'Terminale') {
-            matieres.push("🧪 Spécialité STL (Sciences de Labo)");
+        if(currentUserData && currentUserData.school.toLowerCase().includes('martin') || className === 'Première' || className === 'Terminale') {
+            matieres.push("🧪 Spécialité STL");
         }
 
         container.innerHTML = "";
@@ -366,108 +391,36 @@
         else {
             showScreen('screen-tool-content');
             if (tool === 'quiz') {
-                document.getElementById('content-tool-title').innerText = "🎯 Quiz Interactif";
-                renderQuiz();
+                document.getElementById('content-tool-title').innerText = "🎯 Quiz Interactifs";
+                loadQuizData();
             } else if (tool === 'fiches') {
-                document.getElementById('content-tool-title').innerText = "📚 Espace d'Apprentissage";
+                document.getElementById('content-tool-title').innerText = "📚 Cours & Fiches";
                 document.getElementById('tabs-zone').style.display = 'flex';
-                renderCoursEtFiches();
+                loadCoursEtFichesData();
             }
         }
     }
 
-    function renderQuiz() {
+    // =======================================================
+    // CHARGEMENT DEPUIS SUPABASE (Bientôt rempli à l'Étape 3)
+    // =======================================================
+    function loadQuizData() {
         const body = document.getElementById('content-body');
-        let data = baseDonneesContenu[selectedSubject];
-        if (data && data.quiz) {
-            let optionsHtml = "";
-            data.quiz.options.forEach((opt, idx) => {
-                optionsHtml += `<button class="card-btn" style="margin-top:8px;" onclick="verifierReponse(${idx})">${opt}</button>`;
-            });
-            body.innerHTML = `<h3>${selectedSubject}</h3><p style="font-weight:600; text-align:center;">${data.quiz.question}</p><div>${optionsHtml}</div><div id="quiz-feedback-zone" class="quiz-feedback"></div>`;
-        } else {
-            body.innerHTML = "<p>Aucun quiz configuré.</p>";
-        }
+        body.innerHTML = `<h3>${selectedSubject}</h3><p style="text-align:center; color:#7f8c8d;">Le pack de Quiz sera bientôt synchronisé en Étape 3... 🌱</p>`;
     }
 
-    function renderCoursEtFiches() {
+    function loadCoursEtFichesData() {
         const body = document.getElementById('content-body');
-        let data = baseDonneesContenu[selectedSubject];
-        
-        document.getElementById('tab-btn-fiches').className = `tab-btn ${currentTab === 'fiches' ? 'active' : ''}`;
-        document.getElementById('tab-btn-cours').className = `tab-btn ${currentTab === 'cours' ? 'active' : ''}`;
-
-        if (data && Array.isArray(data.chapitres)) {
-            let html = `<h3>${selectedSubject} (${data.chapitres.length} Leçons)</h3>`;
-            html += `<div class="content-scroll">`;
-            
-            data.chapitres.forEach((ch, index) => {
-                html += `
-                    <div class="chapter-box">
-                        <div class="chapter-header">
-                            <div class="chapter-title">${ch.titre}</div>
-                            <button class="btn-edit" onclick="openEditChapter(${index})">✏️ Modifier</button>
-                        </div>
-                        ${currentTab === 'fiches' 
-                            ? `<div class="fiche-view">${ch.fiche}</div>` 
-                            : `<div class="cours-view">${ch.cours}</div>`
-                        }
-                    </div>
-                `;
-            });
-            
-            html += `</div>`;
-            body.innerHTML = html;
-        }
+        body.innerHTML = `<h3>${selectedSubject}</h3><p style="text-align:center; color:#7f8c8d;">Le pack de Fiches et le Cours Complet A4 arrivent très vite... 🚀</p>`;
     }
 
     function switchTab(type) {
         currentTab = type;
-        renderCoursEtFiches();
+        // La logique de switch s'activera dès que les données seront là
     }
 
-    // Gestion de l'édition dynamique
-    function openEditChapter(index) {
-        editingChapterIndex = index;
-        let chapter = baseDonneesContenu[selectedSubject].chapitres[index];
-        
-        document.getElementById('edit-chapter-subtitle').innerText = `${selectedSubject} - Leçon ${index + 1}`;
-        document.getElementById('edit-title').value = chapter.titre;
-        document.getElementById('edit-fiche').value = chapter.fiche;
-        document.getElementById('edit-cours').value = chapter.cours;
-        
-        showScreen('screen-edit-chapter');
-    }
-
-    function saveEditedChapter() {
-        if(editingChapterIndex === null) return;
-        
-        let target = baseDonneesContenu[selectedSubject].chapitres[editingChapterIndex];
-        target.titre = document.getElementById('edit-title').value;
-        target.fiche = document.getElementById('edit-fiche').value;
-        target.cours = document.getElementById('edit-cours').value;
-        
-        // Sauvegarde immédiate dans la mémoire du navigateur
-        localStorage.setItem("app_revision_data", JSON.stringify(baseDonneesContenu));
-        
-        alert("Chapitre sauvegardé avec succès !");
-        openTool('fiches');
-    }
-
-    function verifierReponse(indexChoisi) {
-        let quizData = baseDonneesContenu[selectedSubject].quiz;
-        let feedbackZone = document.getElementById('quiz-feedback-zone');
-        if (indexChoisi === quizData.reponse) {
-            feedbackZone.className = "quiz-feedback success";
-            feedbackZone.innerHTML = `🎉 Correct !<br>${quizData.explication}`;
-        } else {
-            feedbackZone.className = "quiz-feedback error";
-            feedbackZone.innerHTML = `❌ Faux. Réessaye !`;
-        }
-    }
-
-    function sendChatMessage() { /* Logique inchangée */ }
-    function sendIaMessage() { /* Logique inchangée */ }
+    function sendChatMessage() { /* Géré par Supabase plus tard */ }
+    function sendIaMessage() { /* Connecté aux assistants plus tard */ }
 </script>
 
 </body>
