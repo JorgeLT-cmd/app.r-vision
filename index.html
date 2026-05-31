@@ -45,8 +45,8 @@
         /* Formulaires */
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9em; }
-        input, select { width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; box-sizing: border-box; outline: none; font-size: 1em; }
-        input:focus, select:focus { border-color: var(--primary); }
+        input, select, textarea { width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; box-sizing: border-box; outline: none; font-size: 1em; font-family: inherit; }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); }
 
         /* Boutons */
         .btn { width: 100%; padding: 14px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1em; transition: all 0.2s; margin-top: 5px; }
@@ -54,6 +54,7 @@
         .btn-primary:hover { background: var(--primary-hover); }
         .btn-admin { background: var(--admin-color); color: white; }
         .btn-back { background: #edf2f7; color: #4a5568; margin-top: 15px; }
+        .btn-edit { background: #e2e8f0; color: #4a5568; padding: 6px 12px; font-size: 0.85em; width: auto; border-radius: 6px; cursor: pointer; border: none; font-weight: bold; }
 
         /* Écrans */
         .screen { display: none; }
@@ -86,10 +87,11 @@
         /* Fiches et cours */
         .content-scroll { max-height: 400px; overflow-y: auto; padding-right: 5px; }
         .chapter-box { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .chapter-title { margin: 0 0 10px 0; color: var(--primary); font-size: 1.1em; border-bottom: 2px solid #f1f5f9; padding-bottom: 5px; text-align: left; }
+        .chapter-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f1f5f9; padding-bottom: 5px; margin-bottom: 10px; }
+        .chapter-title { margin: 0; color: var(--primary); font-size: 1.1em; font-weight: bold; }
         
-        .fiche-view { background: #fffdf5; border: 2px dashed #e6c875; padding: 12px; border-radius: 8px; font-size: 0.9em; }
-        .cours-view { background: #f8fafc; border-left: 4px solid #94a3b8; padding: 12px; border-radius: 4px; font-size: 0.95em; line-height: 1.5; text-align: justify; }
+        .fiche-view { background: #fffdf5; border: 2px dashed #e6c875; padding: 12px; border-radius: 8px; font-size: 0.9em; white-space: pre-line; }
+        .cours-view { background: #f8fafc; border-left: 4px solid #94a3b8; padding: 12px; border-radius: 4px; font-size: 0.95em; line-height: 1.5; text-align: justify; white-space: pre-line; }
 
         /* Feedback Quiz */
         .quiz-feedback { margin-top: 15px; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; display: none; }
@@ -208,9 +210,30 @@
         <button class="btn btn-back" onclick="showScreen('screen-tools')">← Retour aux outils</button>
     </div>
 
+    <div id="screen-edit-chapter" class="screen">
+        <h2>📝 Édition du Chapitre</h2>
+        <p class="subtitle" id="edit-chapter-subtitle">Modifie le contenu</p>
+        
+        <div class="form-group">
+            <label for="edit-title">Titre du Chapitre</label>
+            <input type="text" id="edit-title">
+        </div>
+        <div class="form-group">
+            <label for="edit-fiche">Contenu de la Fiche Révision (Format court A5)</label>
+            <textarea id="edit-fiche" rows="4" placeholder="Ex: • Point 1&#10;• Définition..."></textarea>
+        </div>
+        <div class="form-group">
+            <label for="edit-cours">Contenu du Cours Complet (Format long A4)</label>
+            <textarea id="edit-cours" rows="8" placeholder="Rédige les détails théoriques du cours ici..."></textarea>
+        </div>
+        
+        <button class="btn btn-primary" onclick="saveEditedChapter()">💾 Sauvegarder les modifications</button>
+        <button class="btn btn-back" onclick="openTool('fiches')">Annuler</button>
+    </div>
+
     <div id="screen-admin-panel" class="screen">
         <h2 style="color:var(--admin-color);">🛠️ Panneau d'Administration</h2>
-        <p class="subtitle">Gestion des rapports</p>
+        <p class="subtitle">Gestion globale</p>
         <button class="btn btn-back" onclick="showScreen('screen-home')">Retour à l'accueil</button>
     </div>
 
@@ -221,67 +244,66 @@
     let selectedClass = "";
     let selectedSubject = "";
     let iaType = "prof";
-    let currentTab = "fiches"; // Gère l'onglet actif (fiches ou cours)
+    let currentTab = "fiches";
+    let editingChapterIndex = null;
 
-    // BASE DE DONNÉES PARFAITEMENT STRUCTURÉE AVEC 13 CHAPITRES PAR MATIÈRE
-    const baseDonneesContenu = {
+    // Fonction d'initialisation par défaut d'une matière avec ses 13 chapitres
+    function generer13ChapitresVides(nomMatiere) {
+        let list = [];
+        for (let i = 1; i <= 13; i++) {
+            list.push({
+                titre: `Chapitre ${i} : [Titre à compléter]`,
+                fiche: `• Essentiel du Chapitre ${i}\n• Formules et notions clés à retenir au format A5.\n• [Cliquez sur modifier en haut à droite pour éditer]`,
+                cours: `Espace complet dédié au cours de ${nomMatiere} (Chapitre ${i}).\nVous pouvez y coller ou y rédiger vos 3 à 5 pages de texte théorique explicatif.`
+            });
+        }
+        return list;
+    }
+
+    // Structure de base globale de l'application
+    let baseDonneesContenu = {
         "📐 Mathématiques": {
-            quiz: {
-                question: "Quelle est la racine carrée de 9 ?",
-                options: ["3", "6", "9", "81"],
-                reponse: 0,
-                explication: "La racine carrée de 9 est 3 car 3 x 3 = 9."
-            },
-            chapitres: [
-                {
-                    titre: "Chapitre 1 : Les Racines Carrées",
-                    fiche: "<b>Essentiel A5 :</b><br>• Définition : √a est le nombre dont le carré vaut a (√9 = 3).<br>• Propriétés : √(a×b) = √a × √b et √(a/b) = √a / √b.<br>• Piège : √(a+b) n'est PAS égal à √a + √b.",
-                    cours: "<b>Cours Complet A4 (Page 1 à 3) :</b><br>En mathématiques, la racine carrée d'un nombre réel positif x est le nombre positif dont le carré vaut x. Nous l'utilisons régulièrement en géométrie et en algèbre. Règles de calcul détaillées : Le produit de deux racines carrées est égal à la racine carrée de leur produit. Par contre, pour l'addition, il faut d'abord calculer la somme sous le radical avant d'extraire la racine."
-                },
-                {
-                    titre: "Chapitre 2 : Le Théorème de Pythagore",
-                    fiche: "<b>Essentiel A5 :</b><br>• Condition : Un triangle rectangle.<br>• Formule : BC² = AB² + AC² (où BC est l'hypoténuse).<br>• Utilité : Calculer une longueur ou prouver qu'un triangle est rectangle.",
-                    cours: "<b>Cours Complet A4 (Page 1 à 4) :</b><br>Le théorème de Pythagore est un théorème de géométrie euclidienne qui établit une relation entre les longueurs des côtés d'un triangle rectangle. Si un triangle est rectangle, le carré de l'hypoténuse est égal à la somme des carrés des deux autres côtés. Réciproque : si cette égalité est vérifiée, alors le triangle est rectangle."
-                },
-                // Structures prêtes pour les 11 chapitres suivants à compléter
-                { titre: "Chapitre 3 : Théorème de Thalès", fiche: "À compléter...", cours: "À compléter..." },
-                { titre: "Chapitre 4 : Le Calcul Littéral", fiche: "À compléter...", cours: "À compléter..." },
-                { titre: "Chapitre 5 : Les Équations & Inéquations", fiche: "À compléter...", cours: "À compléter..." },
-                { titre: "Chapitre 6 : Les Fonctions Linéaires", fiche: "À compléter...", cours: "À compléter..." },
-                { titre: "Chapitre 7 : Les Fonctions Affines", fiche: "À compléter...", cours: "À compléter..." },
-                { titre: "Chapitre 8 : Trigonométrie", fiche: "À compléter...", cours: "À compléter..." },
-                { titre: "Chapitre 9 : Statistiques", fiche: "À compléter...", cours: "À compléter..." },
-                { titre: "Chapitre 10 : Probabilités", fiche: "À compléter...", cours: "À compléter..." },
-                { titre: "Chapitre 11 : Géométrie dans l'espace", fiche: "À compléter...", cours: "À compléter..." },
-                { titre: "Chapitre 12 : Les Fractions", fiche: "À compléter...", cours: "À compléter..." },
-                { titre: "Chapitre 13 : Les Puissances", fiche: "À compléter...", cours: "À compléter..." }
-            ]
+            quiz: { question: "Quelle est la racine carrée de 9 ?", options: ["3", "6", "9", "81"], reponse: 0, explication: "3 x 3 = 9." },
+            chapitres: generer13ChapitresVides("Mathématiques")
         },
         "🧪 Physique-Chimie": {
-            quiz: { question: "Formule de l'eau ?", options: ["CO2", "H2O", "O2", "N2"], reponse: 1, explication: "L'eau c'est H2O." },
-            chapitres: [
-                { titre: "Chapitre 1 : Atomes et Molécules", fiche: "Essentiel A5 sur les structures atomiques.", cours: "Cours complet A4 sur l'atome, les électrons, protons et neutrons." },
-                { titre: "Chapitre 2 : Les Solutions Aqueuses", fiche: "Essentiel A5 sur la concentration.", cours: "Cours complet A4 sur le soluté, solvant et la saturation." },
-                { titre: "Chapitre 3 : Chapitre 3", fiche: "À compléter...", cours: "À compléter..." },
-                { titre: "Chapitre 4 : Chapitre 4", fiche: "À compléter...", cours: "À compléter..." },
-                { titre: "Chapitre 5 : Chapitre 5", fiche: "À compléter...", cours: "À compléter..." },
-                { titre: "Chapitre 6 : Chapitre 6", fiche: "À compléter...", cours: "À compléter..." },
-                { titre: "Chapitre 7 : Chapitre 7", fiche: "À compléter...", cours: "À compléter..." },
-                { titre: "Chapitre 8 : Chapitre 8", fiche: "À compléter...", cours: "À compléter..." },
-                { titre: "Chapitre 9 : Chapitre 9", fiche: "À compléter...", cours: "À compléter..." },
-                { titre: "Chapitre 10 : Chapitre 10", fiche: "À compléter...", cours: "À compléter..." },
-                { titre: "Chapitre 11 : Chapitre 11", fiche: "À compléter...", cours: "À compléter..." },
-                { titre: "Chapitre 12 : Chapitre 12", fiche: "À compléter...", cours: "À compléter..." },
-                { titre: "Chapitre 13 : Chapitre 13", fiche: "À compléter...", cours: "À compléter..." }
-            ]
+            quiz: { question: "Quelle est la formule de l'eau ?", options: ["CO2", "H2O", "O2", "NaCl"], reponse: 1, explication: "L'eau correspond à H2O." },
+            chapitres: generer13ChapitresVides("Physique-Chimie")
+        },
+        "🌱 SVT": {
+            quiz: { question: "Où se trouve majoritairement l'ADN ?", options: ["Dans le noyau", "Dans le sang", "Dans le cytoplasme"], reponse: 0, explication: "L'ADN est confiné dans le noyau." },
+            chapitres: generer13ChapitresVides("SVT")
+        },
+        "🤖 Technologie": {
+            quiz: { question: "Quel composant sauvegarde de façon permanente ?", options: ["RAM", "Processeur", "Disque dur / SSD"], reponse: 2, explication: "Le stockage non volatile garde les données." },
+            chapitres: generer13ChapitresVides("Technologie")
+        },
+        "🌍 Histoire-Géographie": {
+            quiz: { question: "En quelle année débute la Première Guerre mondiale ?", options: ["1914", "1939", "1945"], reponse: 0, explication: "Le conflit s'est déclenché en 1914." },
+            chapitres: generer13ChapitresVides("Histoire-Géographie")
+        },
+        "📚 Français": {
+            quiz: { question: "Quelle est la nature du mot 'magnifique' ?", options: ["Nom", "Verbe", "Adjectif"], reponse: 2, explication: "C'est un adjectif qualificatif." },
+            chapitres: generer13ChapitresVides("Français")
+        },
+        "🇬🇧 Anglais": {
+            quiz: { question: "Quel est le prétérit de 'to go' ?", options: ["Goed", "Went", "Gone"], reponse: 1, explication: "Go est irrégulier : go -> went." },
+            chapitres: generer13ChapitresVides("Anglais")
+        },
+        "🧪 Spécialité STL (Sciences de Labo)": {
+            quiz: { question: "Quelle verrerie offre la meilleure justesse ?", options: ["Bécher", "Éprouvette", "Fiole jaugée"], reponse: 2, explication: "La fiole jaugée permet une mesure précise de volume fixe." },
+            chapitres: generer13ChapitresVides("Spécialité STL")
         }
-        // Tu peux rajouter les autres matières sur le même modèle exact (avec 13 chapitres à chaque fois)
     };
+
+    // Chargement automatique des données sauvegardées par l'utilisateur s'il y en a
+    if(localStorage.getItem("app_revision_data")) {
+        baseDonneesContenu = JSON.parse(localStorage.getItem("app_revision_data"));
+    }
 
     function showScreen(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        // Masquer les onglets par défaut quand on change d'écran
         document.getElementById('tabs-zone').style.display = 'none';
     }
 
@@ -302,12 +324,7 @@
         document.getElementById('badge-user').innerText = `👤 ${user.username} (${user.role})`;
         document.getElementById('badge-school').innerText = `🏫 ${user.school}`;
         
-        if(user.role === 'admin') {
-            document.getElementById('admin-banner').style.display = 'block';
-        } else {
-            document.getElementById('admin-banner').style.display = 'none';
-        }
-
+        document.getElementById('admin-banner').style.display = (user.role === 'admin') ? 'block' : 'none';
         showScreen('screen-home');
     }
 
@@ -322,8 +339,12 @@
         document.getElementById('title-level').innerText = `Niveau : ${className}`;
         
         const container = document.getElementById('subjects-container');
-        let matieres = ["📐 Mathématiques", "🧪 Physique-Chimie"]; // Simplifié pour l'exemple de code
+        let matieres = ["📐 Mathématiques", "🧪 Physique-Chimie", "🌱 SVT", "🤖 Technologie", "🌍 Histoire-Géographie", "📚 Français", "🇬🇧 Anglais"];
         
+        if(user.school.toLowerCase().includes('martin') || user.school.toLowerCase().includes('st q') || className === 'Première' || className === 'Terminale') {
+            matieres.push("🧪 Spécialité STL (Sciences de Labo)");
+        }
+
         container.innerHTML = "";
         matieres.forEach(m => {
             container.innerHTML += `<button class="card-btn" onclick="selectSubject('${m}')">${m}</button>`;
@@ -339,24 +360,17 @@
     }
 
     function openTool(tool) {
-        if (tool === 'chat') {
-            showScreen('screen-tool-chat');
-        } else if (tool === 'ia-prof') {
-            iaType = 'prof';
-            showScreen('screen-tool-ia');
-        } else if (tool === 'ia-psy') {
-            iaType = 'psy';
-            showScreen('screen-tool-ia');
-        } else {
+        if (tool === 'chat') showScreen('screen-tool-chat');
+        else if (tool === 'ia-prof') { iaType = 'prof'; showScreen('screen-tool-ia'); }
+        else if (tool === 'ia-psy') { iaType = 'psy'; showScreen('screen-tool-ia'); }
+        else {
             showScreen('screen-tool-content');
-            
             if (tool === 'quiz') {
                 document.getElementById('content-tool-title').innerText = "🎯 Quiz Interactif";
                 renderQuiz();
             } else if (tool === 'fiches') {
                 document.getElementById('content-tool-title').innerText = "📚 Espace d'Apprentissage";
-                document.getElementById('tabs-zone').style.display = 'flex'; // Affiche les onglets
-                currentTab = "fiches";
+                document.getElementById('tabs-zone').style.display = 'flex';
                 renderCoursEtFiches();
             }
         }
@@ -372,27 +386,28 @@
             });
             body.innerHTML = `<h3>${selectedSubject}</h3><p style="font-weight:600; text-align:center;">${data.quiz.question}</p><div>${optionsHtml}</div><div id="quiz-feedback-zone" class="quiz-feedback"></div>`;
         } else {
-            body.innerHTML = "<p>Aucun quiz disponible.</p>";
+            body.innerHTML = "<p>Aucun quiz configuré.</p>";
         }
     }
 
-    // FONCTION PRINCIPALE : CHARGE LES 13 CHAPITRES EN FONCTION DE L'ONGLET SÉLECTIONNÉ
     function renderCoursEtFiches() {
         const body = document.getElementById('content-body');
         let data = baseDonneesContenu[selectedSubject];
         
-        // Ajuster l'état visuel des onglets
         document.getElementById('tab-btn-fiches').className = `tab-btn ${currentTab === 'fiches' ? 'active' : ''}`;
         document.getElementById('tab-btn-cours').className = `tab-btn ${currentTab === 'cours' ? 'active' : ''}`;
 
         if (data && Array.isArray(data.chapitres)) {
-            let html = `<h3>${selectedSubject} (${data.chapitres.length} Chapitres disponibles)</h3>`;
+            let html = `<h3>${selectedSubject} (${data.chapitres.length} Leçons)</h3>`;
             html += `<div class="content-scroll">`;
             
-            data.chapitres.forEach(ch => {
+            data.chapitres.forEach((ch, index) => {
                 html += `
                     <div class="chapter-box">
-                        <div class="chapter-title">${ch.titre}</div>
+                        <div class="chapter-header">
+                            <div class="chapter-title">${ch.titre}</div>
+                            <button class="btn-edit" onclick="openEditChapter(${index})">✏️ Modifier</button>
+                        </div>
                         ${currentTab === 'fiches' 
                             ? `<div class="fiche-view">${ch.fiche}</div>` 
                             : `<div class="cours-view">${ch.cours}</div>`
@@ -403,14 +418,40 @@
             
             html += `</div>`;
             body.innerHTML = html;
-        } else {
-            body.innerHTML = "<p>Matière en cours de rédaction.</p>";
         }
     }
 
     function switchTab(type) {
         currentTab = type;
         renderCoursEtFiches();
+    }
+
+    // Gestion de l'édition dynamique
+    function openEditChapter(index) {
+        editingChapterIndex = index;
+        let chapter = baseDonneesContenu[selectedSubject].chapitres[index];
+        
+        document.getElementById('edit-chapter-subtitle').innerText = `${selectedSubject} - Leçon ${index + 1}`;
+        document.getElementById('edit-title').value = chapter.titre;
+        document.getElementById('edit-fiche').value = chapter.fiche;
+        document.getElementById('edit-cours').value = chapter.cours;
+        
+        showScreen('screen-edit-chapter');
+    }
+
+    function saveEditedChapter() {
+        if(editingChapterIndex === null) return;
+        
+        let target = baseDonneesContenu[selectedSubject].chapitres[editingChapterIndex];
+        target.titre = document.getElementById('edit-title').value;
+        target.fiche = document.getElementById('edit-fiche').value;
+        target.cours = document.getElementById('edit-cours').value;
+        
+        // Sauvegarde immédiate dans la mémoire du navigateur
+        localStorage.setItem("app_revision_data", JSON.stringify(baseDonneesContenu));
+        
+        alert("Chapitre sauvegardé avec succès !");
+        openTool('fiches');
     }
 
     function verifierReponse(indexChoisi) {
@@ -425,8 +466,8 @@
         }
     }
 
-    function sendChatMessage() { /* Même logique qu'avant */ }
-    function sendIaMessage() { /* Même logique qu'avant */ }
+    function sendChatMessage() { /* Logique inchangée */ }
+    function sendIaMessage() { /* Logique inchangée */ }
 </script>
 
 </body>
