@@ -423,5 +423,48 @@ const SUPABASE_ANON_KEY = "sb_publishable_LL1TLRU9HDjV1ToFpHiuSA_Mkjni_";
     function sendIaMessage() { /* Connecté aux assistants plus tard */ }
 </script>
 
-</body>
+</body><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const supabaseUrl = 'https://tyycwqowoiootnedzzvi.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR5eWN3cW93b2lvb3RuZWR6enZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzMjg4MzIsImV4cCI6MjA5NTkwNDgzMn0.CSChBAo1wRlhiChhw8fA_ve59DAyLvmovKyxvgqeIjM';
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+async function inscrireEleve(email, password) {
+  const { data, error } = await supabaseClient.auth.signUp({ email, password });
+  if (error) { console.error(error.message); return null; }
+  return data.user;
+}
+
+async function connecterEleve(email, password) {
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+  if (error) { console.error(error.message); return null; }
+  return data.user;
+}
+
+async function envoyerMessage(contenuMessage) {
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) return;
+  await supabaseClient.from('messages').insert([{ content: contenuMessage, user_email: user.email }]);
+}
+
+function brancherLeChatEnTempsReel(actionQuandUnMessageArrive) {
+  supabaseClient
+    .channel('salon-eleves')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
+      actionQuandUnMessageArrive(payload.new);
+    })
+    .subscribe();
+}
+
+async function testerLaConnexion() {
+  const { error } = await supabaseClient.from('quizzes').select('count', { count: 'exact', head: true });
+  if (error) {
+    console.log("⚠️ En attente des tables, mais l'application est connectée.");
+  } else {
+    console.log("🚀 Connexion réussie !");
+  }
+}
+
+testerLaConnexion();
+</script>
 </html>
