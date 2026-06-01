@@ -3,21 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Révision 3ème 2nd 1ère Terminale</title>
-   const SUPABASE_URL = "https://ropoeqggndtpnwyfynsf.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_LL1TLRU9HDjV1ToFpHiuSA_Mkjni_";
+    <title>Révision Scolaire</title>
+    <style>
         :root {
             --primary: #4a6fa5;
             --primary-hover: #3b5984;
             --secondary: #13c1ac;
-            --admin-color: #e74c3c;
             --bg: #f8f9fa;
             --text: #2c3e50;
             --card-bg: #ffffff;
             --success: #2ecc71;
             --danger: #e74c3c;
         }
-        
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
             background-color: var(--bg);
@@ -29,7 +26,6 @@ const SUPABASE_ANON_KEY = "sb_publishable_LL1TLRU9HDjV1ToFpHiuSA_Mkjni_";
             align-items: center;
             min-height: 95vh;
         }
-
         .app-container {
             max-width: 600px;
             width: 100%;
@@ -39,61 +35,35 @@ const SUPABASE_ANON_KEY = "sb_publishable_LL1TLRU9HDjV1ToFpHiuSA_Mkjni_";
             box-shadow: 0 10px 30px rgba(0,0,0,0.08);
             box-sizing: border-box;
         }
-
         h1, h2, h3 { text-align: center; margin-top: 0; }
         .subtitle { text-align: center; color: #7f8c8d; font-size: 0.95em; margin-bottom: 25px; }
-
-        /* Formulaires */
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9em; }
         input, select { width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; box-sizing: border-box; outline: none; font-size: 1em; }
         input:focus, select:focus { border-color: var(--primary); }
-
-        /* Boutons */
         .btn { width: 100%; padding: 14px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1em; transition: all 0.2s; margin-top: 5px; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-primary:hover { background: var(--primary-hover); }
-        .btn-admin { background: var(--admin-color); color: white; }
         .btn-back { background: #edf2f7; color: #4a5568; margin-top: 15px; }
         .btn-link { background: none; border: none; color: var(--primary); font-weight: bold; cursor: pointer; text-decoration: underline; padding: 5px; font-size: 0.9em; width: 100%; text-align: center; }
-
-        /* Écrans */
         .screen { display: none; }
         .screen.active { display: block; }
-
-        /* Grilles & Listes */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
         .list-buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
         .card-btn { background: #f8fafc; border: 2px solid #e2e8f0; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 1em; transition: all 0.2s; text-align: center; width: 100%; box-sizing: border-box; }
         .card-btn:hover { border-color: var(--primary); background: var(--primary); color: white; }
-
-        /* Badges */
         .header-status { display: flex; justify-content: space-between; align-items: center; background: #edf2f7; padding: 8px 15px; border-radius: 30px; font-size: 0.85em; margin-bottom: 20px; font-weight: 600; }
-
-        /* Zone de Chat & IA */
         .chat-box { height: 200px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: #f8fafc; padding: 10px; overflow-y: auto; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
-        .chat-msg { padding: 8px 12px; border-radius: 8px; max-width: 85%; font-size: 0.95em; position: relative; }
+        .chat-msg { padding: 8px 12px; border-radius: 8px; max-width: 85%; font-size: 0.95em; }
         .msg-user { background: #e0f2fe; align-self: flex-end; }
         .msg-other { background: #f1f5f9; align-self: flex-start; }
         .msg-ai { background: #f0fdf4; border-left: 4px solid var(--secondary); align-self: flex-start; }
         .chat-input-zone { display: flex; gap: 8px; }
         .chat-input-zone input { flex: 1; }
         .chat-input-zone button { width: auto; padding: 0 20px; margin: 0; }
-
-        /* Onglets d'outils */
-        .tool-tabs { display: flex; gap: 10px; margin-bottom: 15px; }
-        .tab-btn { flex: 1; padding: 10px; border: 2px solid #e2e8f0; background: #fff; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-
-        /* Fiches et cours */
-        .content-scroll { max-height: 400px; overflow-y: auto; padding-right: 5px; }
-        .chapter-box { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .content-scroll { max-height: 400px; overflow-y: auto; }
+        .chapter-box { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; margin-bottom: 15px; }
         .chapter-title { margin: 0 0 10px 0; color: var(--primary); font-size: 1.1em; border-bottom: 2px solid #f1f5f9; padding-bottom: 5px; text-align: left; }
-        
-        .fiche-view { background: #fffdf5; border: 2px dashed #e6c875; padding: 12px; border-radius: 8px; font-size: 0.9em; }
-        .cours-view { background: #f8fafc; border-left: 4px solid #94a3b8; padding: 12px; border-radius: 4px; font-size: 0.95em; line-height: 1.5; text-align: justify; }
-
-        /* Feedback Quiz */
+        .cours-view { background: #f8fafc; border-left: 4px solid #94a3b8; padding: 12px; border-radius: 4px; font-size: 0.95em; line-height: 1.5; }
         .quiz-feedback { margin-top: 15px; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; display: none; }
         .quiz-feedback.success { display: block; background: #e8f5e9; color: var(--success); }
         .quiz-feedback.error { display: block; background: #ffebee; color: var(--danger); }
@@ -105,366 +75,215 @@ const SUPABASE_ANON_KEY = "sb_publishable_LL1TLRU9HDjV1ToFpHiuSA_Mkjni_";
 
     <div id="screen-login" class="screen active">
         <h1>Révision Scolaire</h1>
-        <p class="subtitle">Connecte-toi pour retrouver tes cours et tes badges</p>
-        <form onsubmit="handleLogin(event)">
-            <div class="form-group">
-                <label for="login-email">Adresse Email</label>
-                <input type="email" id="login-email" placeholder="Ex: lucas@gmail.com" required>
-            </div>
-            <div class="form-group">
-                <label for="login-password">Mot de passe</label>
-                <input type="password" id="login-password" placeholder="••••••••" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Se connecter</button>
-            <button type="button" class="btn-link" onclick="toggleAuthScreens('register')">Pas encore de compte ? S'inscrire</button>
-        </form>
+        <p class="subtitle">Connecte-toi à ton espace</p>
+        <div class="form-group"><label>Adresse Email</label><input type="email" id="login-email" placeholder="mail@exemple.com"></div>
+        <div class="form-group"><label>Mot de passe</label><input type="password" id="login-password" placeholder="••••••••"></div>
+        <button class="btn btn-primary" onclick="connexion()">Se connecter</button>
+        <button class="btn btn-link" onclick="naviguerVers('screen-register')">Pas de compte ? S'inscrire</button>
     </div>
 
     <div id="screen-register" class="screen">
         <h1>Créer un compte</h1>
-        <p class="subtitle">Rejoins l'application de révision</p>
-        <form onsubmit="handleRegister(event)">
-            <div class="form-group">
-                <label for="reg-username">Pseudo ou Prénom</label>
-                <input type="text" id="reg-username" placeholder="Ex: Lucas" required>
-            </div>
-            <div class="form-group">
-                <label for="reg-school">Ton Établissement</label>
-                <input type="text" id="reg-school" placeholder="Ex: Lycée Henri Martin" required>
-            </div>
-            <div class="form-group">
-                <label for="reg-email">Adresse Email</label>
-                <input type="email" id="reg-email" placeholder="Ex: lucas@gmail.com" required>
-            </div>
-            <div class="form-group">
-                <label for="reg-password">Mot de passe</label>
-                <input type="password" id="reg-password" placeholder="Minimum 6 caractères" minlength="6" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Créer mon compte</button>
-            <button type="button" class="btn-link" onclick="toggleAuthScreens('login')">Déjà inscrit ? Se connecter</button>
-        </form>
+        <p class="subtitle">Rejoins tes camarades</p>
+        <div class="form-group"><label>Pseudo</label><input type="text" id="reg-pseudo" placeholder="Lucas"></div>
+        <div class="form-group"><label>Établissement</label><input type="text" id="reg-ecole" placeholder="Collège Jean Moulin"></div>
+        <div class="form-group"><label>Adresse Email</label><input type="email" id="reg-email" placeholder="mail@exemple.com"></div>
+        <div class="form-group"><label>Mot de passe</label><input type="password" id="reg-password" placeholder="••••••••"></div>
+        <button class="btn btn-primary" onclick="inscription()">Créer mon compte</button>
+        <button class="btn btn-link" onclick="naviguerVers('screen-login')">Déjà inscrit ? Se connecter</button>
     </div>
 
-    <div id="screen-home" class="screen">
-        <div class="header-status">
-            <span id="badge-user">👤 Utilisateur</span>
-            <span id="badge-school">🏫 Établissement</span>
-        </div>
+    <div id="screen-dashboard" class="screen">
+        <div class="header-status"><span id="user-display">👤 Élève</span><span>🏫 Connecté</span></div>
         <h2>Tableau de bord</h2>
-        <p class="subtitle" style="margin-bottom:10px;">Explore tous les niveaux disponibles</p>
-        
-        <div id="admin-banner" style="display:none; background:#fee2e2; border:1px solid #fca5a5; padding:10px; border-radius:10px; margin-bottom:15px; text-align:center;">
-            <strong style="color:#b91c1c;">Mode Administrateur Activé 🛠️</strong><br>
-            <button class="btn btn-admin" style="padding:5px 10px; font-size:0.85em; width:auto; margin-top:5px;" onclick="showScreen('screen-admin-panel')">Ouvrir le Panneau de Contrôle</button>
+        <div class="list-buttons">
+            <button class="card-btn" onclick="choisirNiveau('3ème')">3ème (Brevet)</button>
+            <button class="card-btn" onclick="choisirNiveau('Seconde')">Seconde</button>
+            <button class="card-btn" onclick="choisirNiveau('Première')">Première</button>
+            <button class="card-btn" onclick="choisirNiveau('Terminale')">Terminale (Bac)</button>
         </div>
-
-        <div class="grid">
-            <button class="card-btn" onclick="selectClass('3ème')">3ème (Brevet)</button>
-            <button class="card-btn" onclick="selectClass('Seconde')">Seconde</button>
-            <button class="card-btn" onclick="selectClass('Première')">Première</button>
-            <button class="card-btn" onclick="selectClass('Terminale')">Terminale (Bac)</button>
-        </div>
-        <button class="btn btn-back" onclick="logout()">Déconnexion</button>
+        <button class="btn btn-back" onclick="deconnexion()">Déconnexion</button>
     </div>
 
     <div id="screen-subjects" class="screen">
-        <h2 id="title-level">Niveau</h2>
-        <p class="subtitle">Sélectionne ta matière</p>
-        
-        <div class="list-buttons" id="subjects-container"></div>
-        <button class="btn btn-back" onclick="showScreen('screen-home')">← Changer de niveau</button>
+        <h2 id="display-level">Niveau</h2>
+        <div class="list-buttons">
+            <button class="card-btn" onclick="choisirMatiere('📐 Mathématiques')">📐 Mathématiques</button>
+            <button class="card-btn" onclick="choisirMatiere('📚 Français')">📚 Français</button>
+            <button class="card-btn" onclick="choisirMatiere('🌍 Histoire-Géo')">🌍 Histoire-Géo</button>
+        </div>
+        <button class="btn btn-back" onclick="naviguerVers('screen-dashboard')">← Changer de niveau</button>
     </div>
 
     <div id="screen-tools" class="screen">
-        <h2 id="title-tool-subject">Matière</h2>
-        <p class="subtitle">Que veux-tu faire aujourd'hui ?</p>
-        
-        <div class="grid">
-            <button class="card-btn" onclick="openTool('quiz')">📝 Quiz Interactifs</button>
-            <button class="card-btn" onclick="openTool('fiches')">📚 Cours & Fiches</button>
-            <button class="card-btn" onclick="openTool('ia-prof')">🤖 Assistant IA Prof</button>
-            <button class="card-btn" onclick="openTool('ia-psy')">❤️ IA Écoute & Stress</button>
+        <h2 id="display-subject">Matière</h2>
+        <div class="list-buttons">
+            <button class="card-btn" onclick="naviguerVers('screen-quiz')">📝 Quiz Interactifs</button>
+            <button class="card-btn" onclick="naviguerVers('screen-lessons')">📚 Cours & Fiches</button>
+            <button class="card-btn" onclick="naviguerVers('screen-ai')">🤖 Assistant IA Prof</button>
+            <button class="card-btn" onclick="naviguerVers('screen-chat')">💬 Chat d'entraide</button>
         </div>
-        <button class="card-btn" style="width:100%; margin-top:12px; background:#e0f2fe;" onclick="openTool('chat')">💬 Chat d'entraide entre élèves</button>
-        
-        <button class="btn btn-back" onclick="showScreen('screen-subjects')">← Changer de matière</button>
+        <button class="btn btn-back" onclick="naviguerVers('screen-subjects')">← Changer de matière</button>
     </div>
 
-    <div id="screen-tool-chat" class="screen">
+    <div id="screen-quiz" class="screen">
+        <h2>📝 Quiz Interactif</h2>
+        <div class="chapter-box">
+            <div class="chapter-title" id="quiz-question">Chargement...</div>
+            <div class="list-buttons" id="quiz-options"></div>
+            <div id="quiz-feedback" class="quiz-feedback"></div>
+        </div>
+        <button class="btn btn-primary" id="btn-next-quiz" style="display:none;" onclick="chargerProchaineQuestion()">Suivant</button>
+        <button class="btn btn-back" onclick="naviguerVers('screen-tools')">← Retour</button>
+    </div>
+
+    <div id="screen-lessons" class="screen">
+        <h2>📚 Cours & Fiches</h2>
+        <div class="content-scroll" id="lessons-content"></div>
+        <button class="btn btn-back" onclick="naviguerVers('screen-tools')">← Retour</button>
+    </div>
+
+    <div id="screen-chat" class="screen">
         <h2>💬 Salon d'Entraide</h2>
-        <p class="subtitle">Discute en temps réel avec les autres élèves</p>
-        <div class="chat-box" id="chat-messages-box"></div>
+        <div class="chat-box" id="chat-messages"></div>
         <div class="chat-input-zone">
-            <input type="text" id="chat-input-field" placeholder="Écris ton message...">
-            <button class="btn btn-primary" onclick="sendChatMessage()">Envoyer</button>
+            <input type="text" id="chat-input" placeholder="Message...">
+            <button class="btn btn-primary" onclick="envoyerMessage()">Envoyer</button>
         </div>
-        <button class="btn btn-back" onclick="showScreen('screen-tools')">← Retour aux outils</button>
+        <button class="btn btn-back" onclick="naviguerVers('screen-tools')">← Retour</button>
     </div>
 
-    <div id="screen-tool-ia" class="screen">
-        <h2 id="ia-title">Assistant IA</h2>
-        <p class="subtitle" id="ia-subtitle">Pose ta question</p>
-        <div class="chat-box" id="ia-messages-box"></div>
+    <div id="screen-ai" class="screen">
+        <h2>🤖 Assistant IA Prof</h2>
+        <div class="chat-box" id="ai-messages">
+            <div class="chat-msg msg-ai">Bonjour ! Je suis ton prof virtuel. Quelle notion veux-tu réviser ?</div>
+        </div>
         <div class="chat-input-zone">
-            <input type="text" id="ia-input-field" placeholder="Pose ta question ici...">
-            <button class="btn btn-primary" onclick="sendIaMessage()">Demander</button>
+            <input type="text" id="ai-input" placeholder="Pose ta question...">
+            <button class="btn btn-primary" onclick="demanderIa()">Demander</button>
         </div>
-        <button class="btn btn-back" onclick="showScreen('screen-tools')">← Retour aux outils</button>
-    </div>
-
-    <div id="screen-tool-content" class="screen">
-        <h2 id="content-tool-title">Outil</h2>
-        <div id="tabs-zone" class="tool-tabs" style="display:none;">
-            <button id="tab-btn-fiches" class="tab-btn active" onclick="switchTab('fiches')">📋 Fiches Révision (A5)</button>
-            <button id="tab-btn-cours" class="tab-btn" onclick="switchTab('cours')">📖 Cours Complets (A4)</button>
-        </div>
-        <div id="content-body" style="background:#f1f5f9; padding:20px; border-radius:12px; margin:15px 0; min-height:100px;"></div>
-        <button class="btn btn-back" onclick="showScreen('screen-tools')">← Retour aux outils</button>
-    </div>
-
-    <div id="screen-admin-panel" class="screen">
-        <h2 style="color:var(--admin-color);">🛠️ Panneau d'Administration</h2>
-        <p class="subtitle">Gestion et maintenance</p>
-        <button class="btn btn-back" onclick="showScreen('screen-home')">Retour à l'accueil</button>
+        <button class="btn btn-back" onclick="naviguerVers('screen-tools')">← Retour</button>
     </div>
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-    // =======================================================
-    // ⚠️ CONFIGURATION SUPABASE (À Remplir à l'Étape 2)
-    // =======================================================
-    const SUPABASE_URL = "METS_TON_URL_ICI";
-    const SUPABASE_ANON_KEY = "METS_TA_CLE_ANON_ICI";
-    
-    // Initialisation du client Supabase
-    const supabase = (SUPABASE_URL !== "METS_TON_URL_ICI") ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+    const supabaseUrl = 'https://ropoeqggndtpnwyfynsf.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJvcG9lcWdnbmR0cG53eWZ5bnNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzMjg4MzIsImV4cCI6MjA5NTkwNDgzMn0.CSChBAo1wRlhiChhw8fA_ve59DAyLvmovKyxvgqeIjM';
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-    // Variables d'état de l'application
-    let currentUserData = null;
-    let selectedClass = "";
-    let selectedSubject = "";
-    let iaType = "prof";
-    let currentTab = "fiches";
-    
-    // Vérification de session automatique au démarrage
-    window.onload = async function() {
-        if (supabase) {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                // L'utilisateur est déjà connecté, on récupère son profil
-                fetchUserProfile(session.user.id);
-            }
-        }
-    };
+    let niveauSelectionne = "";
+    let matiereSelectionnee = "";
+    let listeQuiz = [];
+    let indexQuestion = 0;
+    let currentUser = null;
 
-    function showScreen(id) {
+    function naviguerVers(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        document.getElementById('tabs-zone').style.display = 'none';
     }
 
-    function toggleAuthScreens(type) {
-        if(type === 'register') showScreen('screen-register');
-        else showScreen('screen-login');
-    }
-
-    // =======================================================
-    // GESTION DE L'AUTHENTIFICATION AVEC SUPABASE
-    // =======================================================
-    async function handleRegister(e) {
-        e.preventDefault();
-        if (!supabase) { alert("Supabase n'est pas configuré !"); return; }
-        
-        const username = document.getElementById('reg-username').value;
-        const school = document.getElementById('reg-school').value;
+    async function inscription() {
         const email = document.getElementById('reg-email').value;
         const password = document.getElementById('reg-password').value;
-
-        // 1. Inscription dans Supabase Auth
-        const { data, error } = await supabase.auth.signUp({ email, password });
-
-        if (error) {
-            alert("Erreur d'inscription : " + error.message);
-            return;
-        }
-
-        if (data.user) {
-            // 2. Création du profil personnalisé dans une table "profiles"
-            const { error: profileError } = await supabase
-                .from('profiles')
-                .insert([{ id: data.user.id, username: username, school: school, role: 'élève' }]);
-
-            if (profileError) {
-                alert("Erreur profil : " + profileError.message);
-            } else {
-                alert("Compte créé avec succès ! Vérifie tes emails si une validation est demandée.");
-                fetchUserProfile(data.user.id);
-            }
-        }
+        const pseudo = document.getElementById('reg-pseudo').value;
+        const { data, error } = await supabaseClient.auth.signUp({ email, password, options: { data: { display_name: pseudo } } });
+        if (error) alert(error.message); else loginReussi(data.user);
     }
 
-    async function handleLogin(e) {
-        e.preventDefault();
-        if (!supabase) { 
-            // Mode démo sans base de données pour tester le visuel
-            currentUserData = { username: "Démo", school: "Lycée Test", role: "élève" };
-            setupDashboard();
-            return; 
-        }
-
+    async function connexion() {
         const email = document.getElementById('login-email').value;
         const password = document.getElementById('login-password').value;
-
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-
-        if (error) {
-            alert("Connexion échouée : " + error.message);
-        } else if (data.user) {
-            fetchUserProfile(data.user.id);
-        }
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        if (error) alert(error.message); else loginReussi(data.user);
     }
 
-    async function fetchUserProfile(userId) {
-        if (!supabase) return;
-        const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
-        if (data) {
-            currentUserData = data;
-            setupDashboard();
-        } else {
-            // Si le mot de passe admin secret est utilisé par exemple
-            if(confirm("Créer un profil admin pour ce compte ?")) {
-                const passwordAdmin = prompt("Code secret admin :");
-                if(passwordAdmin === "AdmiN123nF") {
-                    await supabase.from('profiles').insert([{ id: userId, username: "Admin", school: "Système", role: 'admin' }]);
-                    window.location.reload();
-                }
-            }
-        }
+    function loginReussi(user) {
+        currentUser = user;
+        document.getElementById('user-display').innerText = `👤 ${user.user_metadata.display_name || user.email}`;
+        naviguerVers('screen-dashboard');
+        brancherLeChat();
     }
 
-    function setupDashboard() {
-        document.getElementById('badge-user').innerText = `👤 ${currentUserData.username} (${currentUserData.role})`;
-        document.getElementById('badge-school').innerText = `🏫 ${currentUserData.school}`;
-        document.getElementById('admin-banner').style.display = (currentUserData.role === 'admin') ? 'block' : 'none';
-        showScreen('screen-home');
+    async function deconnexion() {
+        await supabaseClient.auth.signOut();
+        currentUser = null;
+        naviguerVers('screen-login');
     }
 
-    async function logout() {
-        if (supabase) await supabase.auth.signOut();
-        currentUserData = null;
-        showScreen('screen-login');
+    function choisirNiveau(niv) { niveauSelectionne = niv; document.getElementById('display-level').innerText = niv; naviguerVers('screen-subjects'); }
+    
+    function choisirMatiere(mat) { 
+        matiereSelectionnee = mat; 
+        document.getElementById('display-subject').innerText = mat; 
+        naviguerVers('screen-tools');
+        recupererQuiz();
+        genererCours();
     }
 
-    // =======================================================
-    // NAVIGATION ET INTERFACE
-    // =======================================================
-    function selectClass(className) {
-        selectedClass = className;
-        document.getElementById('title-level').innerText = `Niveau : ${className}`;
-        
-        const container = document.getElementById('subjects-container');
-        let matieres = ["📐 Mathématiques", "📚 Français", "🧪 Physique-Chimie", "🌱 SVT", "🤖 Technologie", "🌍 Histoire-Géographie", "🇬🇧 Anglais"];
-        
-        if(currentUserData && currentUserData.school.toLowerCase().includes('martin') || className === 'Première' || className === 'Terminale') {
-            matieres.push("🧪 Spécialité STL");
-        }
-
-        container.innerHTML = "";
-        matieres.forEach(m => {
-            container.innerHTML += `<button class="card-btn" onclick="selectSubject('${m}')">${m}</button>`;
-        });
-
-        showScreen('screen-subjects');
+    async function recupererQuiz() {
+        const { data, error } = await supabaseClient.from('quizzes').select('*').eq('level', niveauSelectionne).eq('subject', matiereSelectionnee);
+        if (!error && data.length > 0) { listeQuiz = data; indexQuestion = 0; afficherQuestion(); } 
+        else { document.getElementById('quiz-question').innerText = "Aucun quiz disponible pour le moment."; document.getElementById('quiz-options').innerHTML = ""; }
     }
 
-    function selectSubject(subjectName) {
-        selectedSubject = subjectName;
-        document.getElementById('title-tool-subject').innerText = `${selectedClass} - ${selectedSubject}`;
-        showScreen('screen-tools');
+    function afficherQuestion() {
+        if(listeQuiz.length === 0) return;
+        let q = listeQuiz[indexQuestion];
+        document.getElementById('quiz-question').innerText = q.question;
+        let html = "";
+        q.options.forEach((opt, idx) => { html += `<button class="card-btn" onclick="validerReponse(${idx}, ${q.reponse_index})">${opt}</button>`; });
+        document.getElementById('quiz-options').innerHTML = html;
+        document.getElementById('quiz-feedback').style.display = "none";
+        document.getElementById('btn-next-quiz').style.display = "none";
     }
 
-    function openTool(tool) {
-        if (tool === 'chat') showScreen('screen-tool-chat');
-        else if (tool === 'ia-prof') { iaType = 'prof'; showScreen('screen-tool-ia'); }
-        else if (tool === 'ia-psy') { iaType = 'psy'; showScreen('screen-tool-ia'); }
-        else {
-            showScreen('screen-tool-content');
-            if (tool === 'quiz') {
-                document.getElementById('content-tool-title').innerText = "🎯 Quiz Interactifs";
-                loadQuizData();
-            } else if (tool === 'fiches') {
-                document.getElementById('content-tool-title').innerText = "📚 Cours & Fiches";
-                document.getElementById('tabs-zone').style.display = 'flex';
-                loadCoursEtFichesData();
-            }
-        }
+    function validerReponse(choix, correct) {
+        let fb = document.getElementById('quiz-feedback');
+        if(choix === correct) { fb.innerText = "🎉 Bonne réponse !"; fb.className = "quiz-feedback success"; } 
+        else { fb.innerText = "❌ Faux, réessaye !"; fb.className = "quiz-feedback error"; }
+        document.getElementById('btn-next-quiz').style.display = "block";
     }
 
-    // =======================================================
-    // CHARGEMENT DEPUIS SUPABASE (Bientôt rempli à l'Étape 3)
-    // =======================================================
-    function loadQuizData() {
-        const body = document.getElementById('content-body');
-        body.innerHTML = `<h3>${selectedSubject}</h3><p style="text-align:center; color:#7f8c8d;">Le pack de Quiz sera bientôt synchronisé en Étape 3... 🌱</p>`;
+    function chargerProchaineQuestion() { indexQuestion = (indexQuestion + 1) % listeQuiz.length; afficherQuestion(); }
+
+    function genererCours() {
+        let content = document.getElementById('lessons-content');
+        content.innerHTML = `<div class="chapter-box"><div class="chapter-title">Fiche Synthèse - ${matiereSelectionnee}</div><div class="cours-view">Fiche de révision du niveau ${niveauSelectionne}. Relisez régulièrement vos formules et définitions fondamentales pour maximiser vos résultats.</div></div>`;
     }
 
-    function loadCoursEtFichesData() {
-        const body = document.getElementById('content-body');
-        body.innerHTML = `<h3>${selectedSubject}</h3><p style="text-align:center; color:#7f8c8d;">Le pack de Fiches et le Cours Complet A4 arrivent très vite... 🚀</p>`;
+    async function envoyerMessage() {
+        let inp = document.getElementById('chat-input');
+        if(!inp.value.trim() || !currentUser) return;
+        await supabaseClient.from('messages').insert([{ user_email: currentUser.user_metadata.display_name || currentUser.email, content: inp.value }]);
+        inp.value = "";
     }
 
-    function switchTab(type) {
-        currentTab = type;
-        // La logique de switch s'activera dès que les données seront là
+    function brancherLeChat() {
+        supabaseClient.channel('salon-eleves').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
+            let msg = payload.new;
+            let box = document.getElementById('chat-messages');
+            let type = msg.user_email === (currentUser.user_metadata.display_name || currentUser.email) ? 'msg-user' : 'msg-other';
+            box.innerHTML += `<div class="chat-msg ${type}"><strong>${msg.user_email}:</strong> ${msg.content}</div>`;
+            box.scrollTop = box.scrollHeight;
+        }).subscribe();
     }
 
-    function sendChatMessage() { /* Géré par Supabase plus tard */ }
-    function sendIaMessage() { /* Connecté aux assistants plus tard */ }
+    function demanderIa() {
+        let inp = document.getElementById('ai-input');
+        if(!inp.value.trim()) return;
+        let box = document.getElementById('ai-messages');
+        box.innerHTML += `<div class="chat-msg msg-user"><strong>Toi:</strong> ${inp.value}</div>`;
+        setTimeout(() => {
+            box.innerHTML += `<div class="chat-msg msg-ai"><strong>Prof Virtuel:</strong> C'est une excellente question pour le niveau ${niveauSelectionne}. Pour y répondre précisément, focalise-toi sur la méthode du cours et applique les définitions fondamentales étape par étape.</div>`;
+            box.scrollTop = box.scrollHeight;
+        }, 800);
+        inp.value = "";
+        box.scrollTop = box.scrollHeight;
+    }
 </script>
-
-</body><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const supabaseUrl = 'https://tyycwqowoiootnedzzvi.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR5eWN3cW93b2lvb3RuZWR6enZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzMjg4MzIsImV4cCI6MjA5NTkwNDgzMn0.CSChBAo1wRlhiChhw8fA_ve59DAyLvmovKyxvgqeIjM';
-const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
-
-async function inscrireEleve(email, password) {
-  const { data, error } = await supabaseClient.auth.signUp({ email, password });
-  if (error) { console.error(error.message); return null; }
-  return data.user;
-}
-
-async function connecterEleve(email, password) {
-  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-  if (error) { console.error(error.message); return null; }
-  return data.user;
-}
-
-async function envoyerMessage(contenuMessage) {
-  const { data: { user } } = await supabaseClient.auth.getUser();
-  if (!user) return;
-  await supabaseClient.from('messages').insert([{ content: contenuMessage, user_email: user.email }]);
-}
-
-function brancherLeChatEnTempsReel(actionQuandUnMessageArrive) {
-  supabaseClient
-    .channel('salon-eleves')
-    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
-      actionQuandUnMessageArrive(payload.new);
-    })
-    .subscribe();
-}
-
-async function testerLaConnexion() {
-  const { error } = await supabaseClient.from('quizzes').select('count', { count: 'exact', head: true });
-  if (error) {
-    console.log("⚠️ En attente des tables, mais l'application est connectée.");
-  } else {
-    console.log("🚀 Connexion réussie !");
-  }
-}
-
-testerLaConnexion();
-</script>
-</html>
+</body>
+</html>git add index.html
+git commit -m "Mise a jour interface et connexion Supabase"
+git push
