@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Révision Scolaire</title>
+    <title>Révision Scolaire Pro</title>
     <style>
         :root {
             --primary: #4a6fa5;
             --primary-hover: #3b5984;
             --secondary: #13c1ac;
+            --admin-color: #e74c3c;
             --bg: #f8f9fa;
             --text: #2c3e50;
             --card-bg: #ffffff;
@@ -27,7 +28,7 @@
             min-height: 95vh;
         }
         .app-container {
-            max-width: 600px;
+            max-width: 650px;
             width: 100%;
             background: var(--card-bg);
             padding: 25px;
@@ -44,6 +45,7 @@
         .btn { width: 100%; padding: 14px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1em; transition: all 0.2s; margin-top: 5px; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-primary:hover { background: var(--primary-hover); }
+        .btn-admin { background: var(--admin-color); color: white; margin-top: 10px; }
         .btn-back { background: #edf2f7; color: #4a5568; margin-top: 15px; }
         .btn-link { background: none; border: none; color: var(--primary); font-weight: bold; cursor: pointer; text-decoration: underline; padding: 5px; font-size: 0.9em; width: 100%; text-align: center; }
         .screen { display: none; }
@@ -52,8 +54,8 @@
         .card-btn { background: #f8fafc; border: 2px solid #e2e8f0; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 1em; transition: all 0.2s; text-align: center; width: 100%; box-sizing: border-box; }
         .card-btn:hover { border-color: var(--primary); background: var(--primary); color: white; }
         .header-status { display: flex; justify-content: space-between; align-items: center; background: #edf2f7; padding: 8px 15px; border-radius: 30px; font-size: 0.85em; margin-bottom: 20px; font-weight: 600; }
-        .chat-box { height: 200px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: #f8fafc; padding: 10px; overflow-y: auto; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
-        .chat-msg { padding: 8px 12px; border-radius: 8px; max-width: 85%; font-size: 0.95em; }
+        .chat-box { height: 220px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: #f8fafc; padding: 10px; overflow-y: auto; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
+        .chat-msg { padding: 8px 12px; border-radius: 8px; max-width: 85%; font-size: 0.95em; line-height: 1.4; }
         .msg-user { background: #e0f2fe; align-self: flex-end; }
         .msg-other { background: #f1f5f9; align-self: flex-start; }
         .msg-ai { background: #f0fdf4; border-left: 4px solid var(--secondary); align-self: flex-start; }
@@ -63,7 +65,7 @@
         .content-scroll { max-height: 400px; overflow-y: auto; }
         .chapter-box { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; margin-bottom: 15px; }
         .chapter-title { margin: 0 0 10px 0; color: var(--primary); font-size: 1.1em; border-bottom: 2px solid #f1f5f9; padding-bottom: 5px; text-align: left; }
-        .cours-view { background: #f8fafc; border-left: 4px solid #94a3b8; padding: 12px; border-radius: 4px; font-size: 0.95em; line-height: 1.5; }
+        .cours-view { background: #f8fafc; border-left: 4px solid #94a3b8; padding: 12px; border-radius: 4px; font-size: 0.95em; line-height: 1.5; text-align: justify; }
         .quiz-feedback { margin-top: 15px; padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; display: none; }
         .quiz-feedback.success { display: block; background: #e8f5e9; color: var(--success); }
         .quiz-feedback.error { display: block; background: #ffebee; color: var(--danger); }
@@ -75,18 +77,18 @@
 
     <div id="screen-login" class="screen active">
         <h1>Révision Scolaire</h1>
-        <p class="subtitle">Connecte-toi à ton espace</p>
+        <p class="subtitle">Connecte-toi pour réviser la 3ème et la Seconde</p>
         <div class="form-group"><label>Adresse Email</label><input type="email" id="login-email" placeholder="mail@exemple.com"></div>
         <div class="form-group"><label>Mot de passe</label><input type="password" id="login-password" placeholder="••••••••"></div>
         <button class="btn btn-primary" onclick="connexion()">Se connecter</button>
-        <button class="btn btn-link" onclick="naviguerVers('screen-register')">Pas de compte ? S'inscrire</button>
+        <button class="btn btn-link" onclick="naviguerVers('screen-register')">Pas encore inscrit ? Créer un compte</button>
     </div>
 
     <div id="screen-register" class="screen">
         <h1>Créer un compte</h1>
-        <p class="subtitle">Rejoins tes camarades</p>
-        <div class="form-group"><label>Pseudo</label><input type="text" id="reg-pseudo" placeholder="Lucas"></div>
-        <div class="form-group"><label>Établissement</label><input type="text" id="reg-ecole" placeholder="Collège Jean Moulin"></div>
+        <p class="subtitle">Rejoins l'espace d'apprentissage</p>
+        <div class="form-group"><label>Pseudo ou Prénom</label><input type="text" id="reg-pseudo" placeholder="Ex: Lucas"></div>
+        <div class="form-group"><label>Établissement</label><input type="text" id="reg-ecole" placeholder="Ex: Collège Jean Moulin"></div>
         <div class="form-group"><label>Adresse Email</label><input type="email" id="reg-email" placeholder="mail@exemple.com"></div>
         <div class="form-group"><label>Mot de passe</label><input type="password" id="reg-password" placeholder="••••••••"></div>
         <button class="btn btn-primary" onclick="inscription()">Créer mon compte</button>
@@ -96,17 +98,20 @@
     <div id="screen-dashboard" class="screen">
         <div class="header-status"><span id="user-display">👤 Élève</span><span>🏫 Connecté</span></div>
         <h2>Tableau de bord</h2>
+        <p class="subtitle">Sélectionne ton niveau d'étude</p>
         <div class="list-buttons">
             <button class="card-btn" onclick="choisirNiveau('3ème')">3ème (Brevet)</button>
             <button class="card-btn" onclick="choisirNiveau('Seconde')">Seconde</button>
-            <button class="card-btn" onclick="choisirNiveau('Première')">Première</button>
-            <button class="card-btn" onclick="choisirNiveau('Terminale')">Terminale (Bac)</button>
+        </div>
+        <div id="admin-zone" style="display: none;">
+            <button class="btn btn-admin" onclick="naviguerVers('screen-admin')">🛠️ Panneau Administration</button>
         </div>
         <button class="btn btn-back" onclick="deconnexion()">Déconnexion</button>
     </div>
 
     <div id="screen-subjects" class="screen">
         <h2 id="display-level">Niveau</h2>
+        <p class="subtitle">Sélectionne ta matière principale</p>
         <div class="list-buttons">
             <button class="card-btn" onclick="choisirMatiere('📐 Mathématiques')">📐 Mathématiques</button>
             <button class="card-btn" onclick="choisirMatiere('📚 Français')">📚 Français</button>
@@ -117,52 +122,71 @@
 
     <div id="screen-tools" class="screen">
         <h2 id="display-subject">Matière</h2>
+        <p class="subtitle">Que veux-tu faire aujourd'hui ?</p>
         <div class="list-buttons">
             <button class="card-btn" onclick="naviguerVers('screen-quiz')">📝 Quiz Interactifs</button>
             <button class="card-btn" onclick="naviguerVers('screen-lessons')">📚 Cours & Fiches</button>
             <button class="card-btn" onclick="naviguerVers('screen-ai')">🤖 Assistant IA Prof</button>
-            <button class="card-btn" onclick="naviguerVers('screen-chat')">💬 Chat d'entraide</button>
+            <button class="card-btn" onclick="naviguerVers('screen-chat')">💬 Chat d'entraide entre élèves</button>
         </div>
         <button class="btn btn-back" onclick="naviguerVers('screen-subjects')">← Changer de matière</button>
     </div>
 
     <div id="screen-quiz" class="screen">
-        <h2>📝 Quiz Interactif</h2>
+        <h2>📝 Quiz Évaluation</h2>
         <div class="chapter-box">
             <div class="chapter-title" id="quiz-question">Chargement...</div>
             <div class="list-buttons" id="quiz-options"></div>
             <div id="quiz-feedback" class="quiz-feedback"></div>
         </div>
-        <button class="btn btn-primary" id="btn-next-quiz" style="display:none;" onclick="chargerProchaineQuestion()">Suivant</button>
-        <button class="btn btn-back" onclick="naviguerVers('screen-tools')">← Retour</button>
+        <button class="btn btn-primary" id="btn-next-quiz" style="display:none;" onclick="chargerProchaineQuestion()">Question suivante</button>
+        <button class="btn btn-back" onclick="naviguerVers('screen-tools')">← Retour aux outils</button>
     </div>
 
     <div id="screen-lessons" class="screen">
-        <h2>📚 Cours & Fiches</h2>
+        <h2>📚 Fiches de Cours Spécifiques</h2>
         <div class="content-scroll" id="lessons-content"></div>
-        <button class="btn btn-back" onclick="naviguerVers('screen-tools')">← Retour</button>
+        <button class="btn btn-back" onclick="naviguerVers('screen-tools')">← Retour aux outils</button>
     </div>
 
     <div id="screen-chat" class="screen">
-        <h2>💬 Salon d'Entraide</h2>
+        <h2>💬 Salon d'Entraide Réel</h2>
         <div class="chat-box" id="chat-messages"></div>
         <div class="chat-input-zone">
-            <input type="text" id="chat-input" placeholder="Message...">
+            <input type="text" id="chat-input" placeholder="Écris ton message ici...">
             <button class="btn btn-primary" onclick="envoyerMessage()">Envoyer</button>
         </div>
-        <button class="btn btn-back" onclick="naviguerVers('screen-tools')">← Retour</button>
+        <button class="btn btn-back" onclick="naviguerVers('screen-tools')">← Retour aux outils</button>
     </div>
 
     <div id="screen-ai" class="screen">
-        <h2>🤖 Assistant IA Prof</h2>
+        <h2>🤖 Professeur IA Écoute</h2>
         <div class="chat-box" id="ai-messages">
-            <div class="chat-msg msg-ai">Bonjour ! Je suis ton prof virtuel. Quelle notion veux-tu réviser ?</div>
+            <div class="chat-msg msg-ai">Bonjour ! Je suis ton tuteur académique. Pose-moi n'importe quelle question sur le programme !</div>
         </div>
         <div class="chat-input-zone">
-            <input type="text" id="ai-input" placeholder="Pose ta question...">
+            <input type="text" id="ai-input" placeholder="Ma question...">
             <button class="btn btn-primary" onclick="demanderIa()">Demander</button>
         </div>
-        <button class="btn btn-back" onclick="naviguerVers('screen-tools')">← Retour</button>
+        <button class="btn btn-back" onclick="naviguerVers('screen-tools')">← Retour aux outils</button>
+    </div>
+
+    <div id="screen-admin" class="screen">
+        <h2>🛠️ Panel d'Administration</h2>
+        <p class="subtitle">Ajouter une question de quiz directement en base</p>
+        <div class="form-group"><label>Niveau</label><select id="adm-level"><option>3ème</option><option>Seconde</option></select></div>
+        <div class="form-group"><label>Matière</label><select id="adm-subject"><option>📐 Mathématiques</option><option>📚 Français</option><option>🌍 Histoire-Géo</option></select></div>
+        <div class="form-group"><label>Chapitre Numéro</label><input type="number" id="adm-chap-num" value="1"></div>
+        <div class="form-group"><label>Titre du Chapitre</label><input type="text" id="adm-chap-title" placeholder="Ex: Les Probabilités"></div>
+        <div class="form-group"><label>Question</label><input type="text" id="adm-question" placeholder="Énoncé"></div>
+        <div class="form-group"><label>Option 1 (Index 0)</label><input type="text" id="adm-o0"></div>
+        <div class="form-group"><label>Option 2 (Index 1)</label><input type="text" id="adm-o1"></div>
+        <div class="form-group"><label>Option 3 (Index 2)</label><input type="text" id="adm-o2"></div>
+        <div class="form-group"><label>Option 4 (Index 3)</label><input type="text" id="adm-o3"></div>
+        <div class="form-group"><label>Index Bonne Réponse (0 à 3)</label><input type="number" id="adm-correct" min="0" max="3" value="0"></div>
+        <div class="form-group"><label>Explication Pédagogique</label><input type="text" id="adm-expl"></div>
+        <button class="btn btn-primary" onclick="creerQuizAdmin()">Ajouter à Supabase</button>
+        <button class="btn btn-back" onclick="naviguerVers('screen-dashboard')">← Retour Accueil</button>
     </div>
 
 </div>
@@ -170,7 +194,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     const supabaseUrl = 'https://ropoeqggndtpnwyfynsf.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJvcG9lcWdnbmR0cG53eWZ5bnNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzMjg4MzIsImV4cCI6MjA5NTkwNDgzMn0.CSChBAo1wRlhiChhw8fA_ve59DAyLvmovKyxvgqeIjM';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJvcG9lcWdnbmR0cG53eWZ5bnNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzMjg4MzIsImV4cCI6MjA5NTg5MzMwMn0.D6D8Rj6_C005F99P_b40hP5wR6qL224kscOQ-Hw46W0';
     const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
     let niveauSelectionne = "";
@@ -178,6 +202,20 @@
     let listeQuiz = [];
     let indexQuestion = 0;
     let currentUser = null;
+
+    // Contenu pédagogique simulé pour le programme complet de 3e et 2de
+    const coursDictionnaire = {
+        "3ème": {
+            "📐 Mathématiques": "<h3>Chapitre 1 : Arithmétique</h3><p>Un nombre premier est un entier naturel qui admet exactement deux diviseurs distincts : 1 et lui-même. Exemple : 2, 3, 5, 7, 11, 13, 17...</p><h3>Chapitre 2 : Théorème de Thalès</h3><p>Si deux droites sécantes sont coupées par deux droites parallèles, alors elles forment deux triangles dont les longueurs des côtés correspondants sont proportionnelles.</p>",
+            "📚 Français": "<h3>Chapitre 1 : L'Adverbe</h3><p>Les adverbes en '-ment' se construisent à partir de l'adjectif qualificatif au féminin auquel on ajoute le suffixe '-ment'. Ils sont invariables.</p><h3>Chapitre 2 : Les Figures de Style</h3><p>La comparaison rapproche deux éléments à l'aide d'un mot outil (comme, tel que, semblable à), contrairement à la métaphore qui fusionne directement les éléments.</p>",
+            "🌍 Histoire-Géo": "<h3>Chapitre 1 : La Première Guerre Mondiale</h3><p>Guerre totale (1914-1918) caractérisée par la violence de masse, la vie dans les tranchées (les Poilus) et le génocide des Arméniens (1915).</p><h3>Chapitre 2 : Les Aires Urbaines en France</h3><p>Une aire urbaine se compose d'un pôle urbain (ville-centre + banlieues) et d'une couronne périurbaine où au moins 40% de la population active travaille dans le pôle.</p>"
+        },
+        "Seconde": {
+            "📐 Mathématiques": "<h3>Chapitre 1 : Les Ensembles de Nombres</h3><p>Les nombres réels sont classés en plusieurs sous-ensembles : Entiers naturels (N), Entiers relatifs (Z), Décimaux (D), Rationnels (Q) pouvant s'écrire sous forme de fraction, et Irrationnels (comme Pi ou racine de 2).</p><h3>Chapitre 2 : Fonction Carré</h3><p>La fonction f(x)=x² est définie sur R. Elle est strictement décroissante sur les nombres négatifs et strictement croissante sur les nombres positifs. Sa courbe est une parabole symétrique par rapport à l'axe des ordonnées.</p>",
+            "📚 Français": "<h3>Chapitre 1 : Le Théâtre au XVIIe et XIXe</h3><p>Les règles du théâtre classique incluent la règle des trois unités (action, temps, lieu) et la bienséance. Au XIXe, le drame romantique brise ces codes.</p><h3>Chapitre 2 : Le Romantisme et le Spleen</h3><p>Mouvements littéraires majeurs axés sur l'expression du 'Moi', de la mélancolie, de la nature et de la rupture des structures poétiques traditionnelles.</p>",
+            "🌍 Histoire-Géo": "<h3>Chapitre 1 : Le Monde Méditerranéen Antique</h3><p>L'Athènes du Ve siècle avant J.-C. fonde la citoyenneté sur la participation directe aux assemblées (Ecclésia), tandis que l'Empire Romain unifie le bassin via la Pax Romana.</p><h3>Chapitre 2 : La Transition Démographique</h3><p>Modèle spatial décrivant le passage d'un régime traditionnel (forte natalité/mortalité) à un régime moderne (faible natalité/mortalité) provoquant une forte croissance démographique intermédiaire.</p>"
+        }
+    };
 
     function naviguerVers(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -202,8 +240,17 @@
     function loginReussi(user) {
         currentUser = user;
         document.getElementById('user-display').innerText = `👤 ${user.user_metadata.display_name || user.email}`;
+        
+        // VÉRIFICATION DU RÔLE ADMIN PAR EMAIL
+        if(user.email.includes('admin') || user.email === 'ropoeqggndtpnwyfynsf@supabase.co') {
+            document.getElementById('admin-zone').style.display = "block";
+        } else {
+            document.getElementById('admin-zone').style.display = "none";
+        }
+        
         naviguerVers('screen-dashboard');
         brancherLeChat();
+        chargerMessagesExistants();
     }
 
     async function deconnexion() {
@@ -212,7 +259,11 @@
         naviguerVers('screen-login');
     }
 
-    function choisirNiveau(niv) { niveauSelectionne = niv; document.getElementById('display-level').innerText = niv; naviguerVers('screen-subjects'); }
+    function choisirNiveau(niv) { 
+        niveauSelectionne = niv; 
+        document.getElementById('display-level').innerText = "Niveau : " + niv; 
+        naviguerVers('screen-subjects'); 
+    }
     
     function choisirMatiere(mat) { 
         matiereSelectionnee = mat; 
@@ -223,34 +274,69 @@
     }
 
     async function recupererQuiz() {
-        const { data, error } = await supabaseClient.from('quizzes').select('*').eq('level', niveauSelectionne).eq('subject', matiereSelectionnee);
-        if (!error && data.length > 0) { listeQuiz = data; indexQuestion = 0; afficherQuestion(); } 
-        else { document.getElementById('quiz-question').innerText = "Aucun quiz disponible pour le moment."; document.getElementById('quiz-options').innerHTML = ""; }
+        const { data, error } = await supabaseClient.from('quizzes').select('*').eq('level', niveauSelectionne).eq('subject', matiereSelectionnee).order('id', { ascending: true });
+        if (!error && data && data.length > 0) { 
+            listeQuiz = data; 
+            indexQuestion = 0; 
+            afficherQuestion(); 
+        } else { 
+            document.getElementById('quiz-question').innerText = "Aucun quiz disponible en base pour cette matière."; 
+            document.getElementById('quiz-options').innerHTML = ""; 
+            document.getElementById('quiz-feedback').style.display = "none";
+            document.getElementById('btn-next-quiz').style.display = "none";
+        }
     }
 
     function afficherQuestion() {
         if(listeQuiz.length === 0) return;
         let q = listeQuiz[indexQuestion];
-        document.getElementById('quiz-question').innerText = q.question;
+        document.getElementById('quiz-question').innerText = `[Chapitre ${q.chapter_number} : ${q.title_chapter}] \n\n ${q.question}`;
         let html = "";
-        q.options.forEach((opt, idx) => { html += `<button class="card-btn" onclick="validerReponse(${idx}, ${q.reponse_index})">${opt}</button>`; });
+        q.options.forEach((opt, idx) => { 
+            html += `<button class="card-btn" onclick="validerReponse(${idx}, ${q.reponse_index}, '${q.explication.replace(/'/g, "\\'")}')">${opt}</button>`; 
+        });
         document.getElementById('quiz-options').innerHTML = html;
         document.getElementById('quiz-feedback').style.display = "none";
         document.getElementById('btn-next-quiz').style.display = "none";
     }
 
-    function validerReponse(choix, correct) {
+    function validerReponse(choix, correct, explication) {
         let fb = document.getElementById('quiz-feedback');
-        if(choix === correct) { fb.innerText = "🎉 Bonne réponse !"; fb.className = "quiz-feedback success"; } 
-        else { fb.innerText = "❌ Faux, réessaye !"; fb.className = "quiz-feedback error"; }
+        if(choix === correct) { 
+            fb.innerText = "🎉 Bonne réponse ! \n" + explication; 
+            fb.className = "quiz-feedback success"; 
+        } else { 
+            fb.innerText = "❌ Mauvaise réponse. \n" + explication; 
+            fb.className = "quiz-feedback error"; 
+        }
         document.getElementById('btn-next-quiz').style.display = "block";
     }
 
-    function chargerProchaineQuestion() { indexQuestion = (indexQuestion + 1) % listeQuiz.length; afficherQuestion(); }
+    function chargerProchaineQuestion() { 
+        indexQuestion = (indexQuestion + 1) % listeQuiz.length; 
+        afficherQuestion(); 
+    }
 
     function genererCours() {
         let content = document.getElementById('lessons-content');
-        content.innerHTML = `<div class="chapter-box"><div class="chapter-title">Fiche Synthèse - ${matiereSelectionnee}</div><div class="cours-view">Fiche de révision du niveau ${niveauSelectionne}. Relisez régulièrement vos formules et définitions fondamentales pour maximiser vos résultats.</div></div>`;
+        if(coursDictionnaire[niveauSelectionne] && coursDictionnaire[niveauSelectionne][matiereSelectionnee]) {
+            content.innerHTML = `<div class="chapter-box">${coursDictionnaire[niveauSelectionne][matiereSelectionnee]}</div>`;
+        } else {
+            content.innerHTML = `<div class="chapter-box"><p>Fiche synthèse en cours de rédaction pour cette matière.</p></div>`;
+        }
+    }
+
+    async function chargerMessagesExistants() {
+        const { data, error } = await supabaseClient.from('messages').select('*').order('created_at', { ascending: true }).limit(50);
+        if(!error && data) {
+            let box = document.getElementById('chat-messages');
+            box.innerHTML = "";
+            data.forEach(msg => {
+                let type = msg.user_email === (currentUser.user_metadata.display_name || currentUser.email) ? 'msg-user' : 'msg-other';
+                box.innerHTML += `<div class="chat-msg ${type}"><strong>${msg.user_email}:</strong> ${msg.content}</div>`;
+            });
+            box.scrollTop = box.scrollHeight;
+        }
     }
 
     async function envoyerMessage() {
@@ -274,16 +360,56 @@
         let inp = document.getElementById('ai-input');
         if(!inp.value.trim()) return;
         let box = document.getElementById('ai-messages');
-        box.innerHTML += `<div class="chat-msg msg-user"><strong>Toi:</strong> ${inp.value}</div>`;
-        setTimeout(() => {
-            box.innerHTML += `<div class="chat-msg msg-ai"><strong>Prof Virtuel:</strong> C'est une excellente question pour le niveau ${niveauSelectionne}. Pour y répondre précisément, focalise-toi sur la méthode du cours et applique les définitions fondamentales étape par étape.</div>`;
-            box.scrollTop = box.scrollHeight;
-        }, 800);
+        let question = inp.value;
+        box.innerHTML += `<div class="chat-msg msg-user"><strong>Toi:</strong> ${question}</div>`;
         inp.value = "";
         box.scrollTop = box.scrollHeight;
+
+        setTimeout(() => {
+            let reponseBase = `En tant que professeur de ${niveauSelectionne}, je te conseille de lier cela à ton cours de ${matiereSelectionnee}. `;
+            if(question.toLowerCase().includes('thales') || question.toLowerCase().includes('triangle')) {
+                reponseBase += "Rappelle-toi que pour Thalès, le parallélisme est la clé absolue du calcul des rapports.";
+            } else if (question.toLowerCase().includes('nombre') || question.toLowerCase().includes('premier')) {
+                reponseBase += "Un nombre premier ne se divise que par 1 et lui-même. 1 n'est pas premier car il n'a qu'un seul diviseur.";
+            } else {
+                reponseBase += "Analyse minutieusement l'énoncé, décompose le problème par étapes et applique la définition stricte de la fiche de révision.";
+            }
+            box.innerHTML += `<div class="chat-msg msg-ai"><strong>Prof Virtuel:</strong> ${reponseBase}</div>`;
+            box.scrollTop = box.scrollHeight;
+        }, 800);
+    }
+
+    async function creerQuizAdmin() {
+        const level = document.getElementById('adm-level').value;
+        const subject = document.getElementById('adm-subject').value;
+        const chapter_number = parseInt(document.getElementById('adm-chap-num').value);
+        const title_chapter = document.getElementById('adm-chap-title').value;
+        const question = document.getElementById('adm-question').value;
+        const options = [
+            document.getElementById('adm-o0').value,
+            document.getElementById('adm-o1').value,
+            document.getElementById('adm-o2').value,
+            document.getElementById('adm-o3').value
+        ];
+        const reponse_index = parseInt(document.getElementById('adm-correct').value);
+        const explication = document.getElementById('adm-expl').value;
+
+        if(!title_chapter || !question || !options[0] || !options[1]) {
+            alert("Veuillez remplir au moins le titre, la question et deux options.");
+            return;
+        }
+
+        const { error } = await supabaseClient.from('quizzes').insert([{
+            level, subject, chapter_number, title_chapter, question, options, reponse_index, explication
+        }]);
+
+        if(error) {
+            alert("Erreur lors de l'ajout : " + error.message);
+        } else {
+            alert("🎉 Question ajoutée avec succès dans Supabase !");
+            naviguerVers('screen-dashboard');
+        }
     }
 </script>
 </body>
-</html>git add index.html
-git commit -m "Mise a jour interface et connexion Supabase"
-git push
+</html>
