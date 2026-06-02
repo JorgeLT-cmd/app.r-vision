@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Révision Scolaire Pro</title>
+    <title>Révision Scolaire Globale</title>
     <style>
         :root {
             --primary: #4a6fa5;
@@ -77,18 +77,18 @@
 
     <div id="screen-login" class="screen active">
         <h1>Révision Scolaire</h1>
-        <p class="subtitle">Connecte-toi pour réviser la 3ème et la Seconde</p>
+        <p class="subtitle">Espace d'entraînement du Collège au Lycée</p>
         <div class="form-group"><label>Adresse Email</label><input type="email" id="login-email" placeholder="mail@exemple.com"></div>
         <div class="form-group"><label>Mot de passe</label><input type="password" id="login-password" placeholder="••••••••"></div>
         <button class="btn btn-primary" onclick="connexion()">Se connecter</button>
-        <button class="btn btn-link" onclick="naviguerVers('screen-register')">Pas encore inscrit ? Créer un compte</button>
+        <button class="btn btn-link" onclick="naviguerVers('screen-register')">Créer un compte d'élève</button>
     </div>
 
     <div id="screen-register" class="screen">
         <h1>Créer un compte</h1>
-        <p class="subtitle">Rejoins l'espace d'apprentissage</p>
+        <p class="subtitle">Rejoins la communauté</p>
         <div class="form-group"><label>Pseudo ou Prénom</label><input type="text" id="reg-pseudo" placeholder="Ex: Lucas"></div>
-        <div class="form-group"><label>Établissement</label><input type="text" id="reg-ecole" placeholder="Ex: Collège Jean Moulin"></div>
+        <div class="form-group"><label>Établissement</label><input type="text" id="reg-ecole" placeholder="Ex: Lycée Buffon"></div>
         <div class="form-group"><label>Adresse Email</label><input type="email" id="reg-email" placeholder="mail@exemple.com"></div>
         <div class="form-group"><label>Mot de passe</label><input type="password" id="reg-password" placeholder="••••••••"></div>
         <button class="btn btn-primary" onclick="inscription()">Créer mon compte</button>
@@ -98,10 +98,12 @@
     <div id="screen-dashboard" class="screen">
         <div class="header-status"><span id="user-display">👤 Élève</span><span>🏫 Connecté</span></div>
         <h2>Tableau de bord</h2>
-        <p class="subtitle">Sélectionne ton niveau d'étude</p>
+        <p class="subtitle">Sélectionne ton niveau d'étude actuel</p>
         <div class="list-buttons">
             <button class="card-btn" onclick="choisirNiveau('3ème')">3ème (Brevet)</button>
             <button class="card-btn" onclick="choisirNiveau('Seconde')">Seconde</button>
+            <button class="card-btn" onclick="choisirNiveau('Première')">Première</button>
+            <button class="card-btn" onclick="choisirNiveau('Terminale')">Terminale (Bac)</button>
         </div>
         <div id="admin-zone" style="display: none;">
             <button class="btn btn-admin" onclick="naviguerVers('screen-admin')">🛠️ Panneau Administration</button>
@@ -174,7 +176,7 @@
     <div id="screen-admin" class="screen">
         <h2>🛠️ Panel d'Administration</h2>
         <p class="subtitle">Ajouter une question de quiz directement en base</p>
-        <div class="form-group"><label>Niveau</label><select id="adm-level"><option>3ème</option><option>Seconde</option></select></div>
+        <div class="form-group"><label>Niveau</label><select id="adm-level"><option>3ème</option><option>Seconde</option><option>Première</option><option>Terminale</option></select></div>
         <div class="form-group"><label>Matière</label><select id="adm-subject"><option>📐 Mathématiques</option><option>📚 Français</option><option>🌍 Histoire-Géo</option></select></div>
         <div class="form-group"><label>Chapitre Numéro</label><input type="number" id="adm-chap-num" value="1"></div>
         <div class="form-group"><label>Titre du Chapitre</label><input type="text" id="adm-chap-title" placeholder="Ex: Les Probabilités"></div>
@@ -203,17 +205,26 @@
     let indexQuestion = 0;
     let currentUser = null;
 
-    // Contenu pédagogique simulé pour le programme complet de 3e et 2de
     const coursDictionnaire = {
         "3ème": {
-            "📐 Mathématiques": "<h3>Chapitre 1 : Arithmétique</h3><p>Un nombre premier est un entier naturel qui admet exactement deux diviseurs distincts : 1 et lui-même. Exemple : 2, 3, 5, 7, 11, 13, 17...</p><h3>Chapitre 2 : Théorème de Thalès</h3><p>Si deux droites sécantes sont coupées par deux droites parallèles, alors elles forment deux triangles dont les longueurs des côtés correspondants sont proportionnelles.</p>",
-            "📚 Français": "<h3>Chapitre 1 : L'Adverbe</h3><p>Les adverbes en '-ment' se construisent à partir de l'adjectif qualificatif au féminin auquel on ajoute le suffixe '-ment'. Ils sont invariables.</p><h3>Chapitre 2 : Les Figures de Style</h3><p>La comparaison rapproche deux éléments à l'aide d'un mot outil (comme, tel que, semblable à), contrairement à la métaphore qui fusionne directement les éléments.</p>",
-            "🌍 Histoire-Géo": "<h3>Chapitre 1 : La Première Guerre Mondiale</h3><p>Guerre totale (1914-1918) caractérisée par la violence de masse, la vie dans les tranchées (les Poilus) et le génocide des Arméniens (1915).</p><h3>Chapitre 2 : Les Aires Urbaines en France</h3><p>Une aire urbaine se compose d'un pôle urbain (ville-centre + banlieues) et d'une couronne périurbaine où au moins 40% de la population active travaille dans le pôle.</p>"
+            "📐 Mathématiques": "<h3>Chapitre 1 : Arithmétique</h3><p>Un nombre premier est un entier naturel qui admet exactement deux diviseurs distincts : 1 et lui-même.</p><h3>Chapitre 2 : Théorème de Thalès</h3><p>Nécessite deux droites parallèles coupées par deux droites sécantes pour établir l'égalité des rapports.</p>",
+            "📚 Français": "<h3>Chapitre 1 : L'Adverbe</h3><p>Mots invariables modifiant un verbe ou un adjectif. Souvent formés en '-ment'.</p><h3>Chapitre 2 : Les Figures de Style</h3><p>La comparaison utilise un outil comparatif ('comme'), pas la métaphore.</p>",
+            "🌍 Histoire-Géo": "<h3>Chapitre 1 : Première Guerre Mondiale</h3><p>Phase de violence de masse de 1914 à 1918 (guerre des tranchées).</p><h3>Chapitre 2 : Aires Urbaines</h3><p>Définies par un pôle urbain dynamique entouré de sa couronne périurbaine.</p>"
         },
         "Seconde": {
-            "📐 Mathématiques": "<h3>Chapitre 1 : Les Ensembles de Nombres</h3><p>Les nombres réels sont classés en plusieurs sous-ensembles : Entiers naturels (N), Entiers relatifs (Z), Décimaux (D), Rationnels (Q) pouvant s'écrire sous forme de fraction, et Irrationnels (comme Pi ou racine de 2).</p><h3>Chapitre 2 : Fonction Carré</h3><p>La fonction f(x)=x² est définie sur R. Elle est strictement décroissante sur les nombres négatifs et strictement croissante sur les nombres positifs. Sa courbe est une parabole symétrique par rapport à l'axe des ordonnées.</p>",
-            "📚 Français": "<h3>Chapitre 1 : Le Théâtre au XVIIe et XIXe</h3><p>Les règles du théâtre classique incluent la règle des trois unités (action, temps, lieu) et la bienséance. Au XIXe, le drame romantique brise ces codes.</p><h3>Chapitre 2 : Le Romantisme et le Spleen</h3><p>Mouvements littéraires majeurs axés sur l'expression du 'Moi', de la mélancolie, de la nature et de la rupture des structures poétiques traditionnelles.</p>",
-            "🌍 Histoire-Géo": "<h3>Chapitre 1 : Le Monde Méditerranéen Antique</h3><p>L'Athènes du Ve siècle avant J.-C. fonde la citoyenneté sur la participation directe aux assemblées (Ecclésia), tandis que l'Empire Romain unifie le bassin via la Pax Romana.</p><h3>Chapitre 2 : La Transition Démographique</h3><p>Modèle spatial décrivant le passage d'un régime traditionnel (forte natalité/mortalité) à un régime moderne (faible natalité/mortalité) provoquant une forte croissance démographique intermédiaire.</p>"
+            "📐 Mathématiques": "<h3>Chapitre 1 : Les Ensembles de Nombres</h3><p>Classification stricte des réels : N, Z, D, Q et les nombres irrationnels.</p><h3>Chapitre 2 : Fonction Carré</h3><p>f(x)=x² est représentée géométriquement par une parabole symétrique.</p>",
+            "📚 Français": "<h3>Chapitre 1 : Le Théâtre</h3><p>Structure d'une pièce classique : exposition, nœud dramatique, dénouement.</p><h3>Chapitre 2 : Poésie du XIXe</h3><p>Exploration de la modernité poétique avec l'émergence du Spleen.</p>",
+            "🌍 Histoire-Géo": "<h3>Chapitre 1 : Antiquité Méditerranéenne</h3><p>Modèle civique d'Athènes et rayonnement culturel de sa démocratie directe.</p><h3>Chapitre 2 : Transition Démographique</h3><p>Modèle en phases liant la baisse de la mortalité au boom de population.</p>"
+        },
+        "Première": {
+            "📐 Mathématiques": "<h3>Chapitre 1 : Équations du Second Degré</h3><p>L'équation ax² + bx + c = 0 s'étudie à l'aide de son discriminant Delta = b² - 4ac. Si Delta > 0, il y a deux solutions distinctes.</p><h3>Chapitre 2 : Introduction à la Dérivation</h3><p>Le nombre dérivé mesure le coefficient directeur de la tangente à une courbe en un point.</p>",
+            "📚 Français": "<h3>Chapitre 1 : L'Anaphore</h3><p>Figure de répétition stylistique forte positionnée systématiquement en tête de vers ou de phrase pour marteler une idée.</p><h3>Chapitre 2 : Évolution du Roman</h3><p>Le XIXe siècle voit s'affronter et s'installer le Réalisme (Stendhal, Balzac) et le Naturalisme (Zola).</p>",
+            "🌍 Histoire-Géo": "<h3>Chapitre 1 : Ruptures Révolutionnaires</h3><p>La période 1789-1804 instaure la fin des privilèges, la Déclaration des Droits de l'Homme et la proclamation de la République (1792).</p><h3>Chapitre 2 : Métropolisation</h3><p>Les métropoles concentrent les pouvoirs économiques, politiques et culturels à l'échelle mondiale.</p>"
+        },
+        "Terminale": {
+            "📐 Mathématiques": "<h3>Chapitre 1 : Suites Numériques</h3><p>Une suite géométrique progresse par multiplication constante par sa raison q. Formule générale : u_n = u_0 * q^n.</p><h3>Chapitre 2 : Fonction Exponentielle</h3><p>Unique fonction dérivable sur R égale à sa propre dérivée et prenant la valeur 1 en 0. Notée exp(x) ou e^x.</p>",
+            "📚 Français": "<h3>Chapitre 1 : Philosophie des Lumières</h3><p>Lutte philosophique majeure menée par l'Encyclopédie contre l'absolutisme, le fanatisme religieux et pour l'autonomie de la pensée.</p><h3>Chapitre 2 : Le Tragique Classique</h3><p>Le théâtre tragique met en scène des personnages nobles broyés par le destin, la fatalité et les passions destructrices.</p>",
+            "🌍 Histoire-Géo": "<h3>Chapitre 1 : Le Monde de 1945 à nos jours</h3><p>La Guerre froide divise le globe en un système bipolaire (USA vs URSS) caractérisé par des crises successives sans affrontement direct.</p><h3>Chapitre 2 : Dynamiques de la Mondialisation</h3><p>Les flux mondiaux de marchandises transitent en priorité par des verrous maritimes géostratégiques (canaux et détroits mondiaux).</p>"
         }
     };
 
@@ -241,7 +252,6 @@
         currentUser = user;
         document.getElementById('user-display').innerText = `👤 ${user.user_metadata.display_name || user.email}`;
         
-        // VÉRIFICATION DU RÔLE ADMIN PAR EMAIL
         if(user.email.includes('admin') || user.email === 'ropoeqggndtpnwyfynsf@supabase.co') {
             document.getElementById('admin-zone').style.display = "block";
         } else {
@@ -280,7 +290,7 @@
             indexQuestion = 0; 
             afficherQuestion(); 
         } else { 
-            document.getElementById('quiz-question').innerText = "Aucun quiz disponible en base pour cette matière."; 
+            document.getElementById('quiz-question').innerText = "Aucun quiz disponible pour le moment."; 
             document.getElementById('quiz-options').innerHTML = ""; 
             document.getElementById('quiz-feedback').style.display = "none";
             document.getElementById('btn-next-quiz').style.display = "none";
@@ -322,7 +332,7 @@
         if(coursDictionnaire[niveauSelectionne] && coursDictionnaire[niveauSelectionne][matiereSelectionnee]) {
             content.innerHTML = `<div class="chapter-box">${coursDictionnaire[niveauSelectionne][matiereSelectionnee]}</div>`;
         } else {
-            content.innerHTML = `<div class="chapter-box"><p>Fiche synthèse en cours de rédaction pour cette matière.</p></div>`;
+            content.innerHTML = `<div class="chapter-box"><p>Fiche synthèse en cours de rédaction.</p></div>`;
         }
     }
 
@@ -366,13 +376,13 @@
         box.scrollTop = box.scrollHeight;
 
         setTimeout(() => {
-            let reponseBase = `En tant que professeur de ${niveauSelectionne}, je te conseille de lier cela à ton cours de ${matiereSelectionnee}. `;
-            if(question.toLowerCase().includes('thales') || question.toLowerCase().includes('triangle')) {
-                reponseBase += "Rappelle-toi que pour Thalès, le parallélisme est la clé absolue du calcul des rapports.";
-            } else if (question.toLowerCase().includes('nombre') || question.toLowerCase().includes('premier')) {
-                reponseBase += "Un nombre premier ne se divise que par 1 et lui-même. 1 n'est pas premier car il n'a qu'un seul diviseur.";
+            let reponseBase = `En tant que tuteur de ${niveauSelectionne}, je te conseille de retenir la méthode fondamentale pour l'épreuve de ${matiereSelectionnee}. `;
+            if(question.toLowerCase().includes('delta') || question.toLowerCase().includes('second degre')) {
+                reponseBase += "Si Delta > 0, deux racines réelles existent : (-b-√Δ)/(2a) et (-b+√Δ)/(2a).";
+            } else if (question.toLowerCase().includes('exponentielle') || question.toLowerCase().includes('exp')) {
+                reponseBase += "L'exponentielle est toujours strictement positive sur R et exp(a+b) = exp(a)*exp(b).";
             } else {
-                reponseBase += "Analyse minutieusement l'énoncé, décompose le problème par étapes et applique la définition stricte de la fiche de révision.";
+                reponseBase += "Prends le temps d'isoler les mots-clés, structure ton argumentation par étapes et vérifie tes formules à l'aide de ta fiche.";
             }
             box.innerHTML += `<div class="chat-msg msg-ai"><strong>Prof Virtuel:</strong> ${reponseBase}</div>`;
             box.scrollTop = box.scrollHeight;
@@ -406,7 +416,7 @@
         if(error) {
             alert("Erreur lors de l'ajout : " + error.message);
         } else {
-            alert("🎉 Question ajoutée avec succès dans Supabase !");
+            alert("🎉 Question ajoutée avec succès !");
             naviguerVers('screen-dashboard');
         }
     }
