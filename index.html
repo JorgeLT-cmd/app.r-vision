@@ -112,12 +112,15 @@
     </div>
 
     <div id="screen-subjects" class="screen">
-        <h2 id="display-level">Niveau</h2>
+        <div class="header-status"><span id="display-level">Niveau</span></div>
+        <h2>Matières disponibles</h2>
         <p class="subtitle">Sélectionne ta matière principale</p>
         <div class="list-buttons">
             <button class="card-btn" onclick="choisirMatiere('📐 Mathématiques')">📐 Mathématiques</button>
             <button class="card-btn" onclick="choisirMatiere('📚 Français')">📚 Français</button>
             <button class="card-btn" onclick="choisirMatiere('🌍 Histoire-Géo')">🌍 Histoire-Géo</button>
+            <button class="card-btn" onclick="choisirMatiere('🇬🇧 Anglais')">🇬🇧 Anglais</button>
+            <button class="card-btn" onclick="choisirMatiere('🛠️ Technologie')">🛠️ Technologie</button>
         </div>
         <button class="btn btn-back" onclick="naviguerVers('screen-dashboard')">← Changer de niveau</button>
     </div>
@@ -177,7 +180,7 @@
         <h2>🛠️ Panel d'Administration</h2>
         <p class="subtitle">Ajouter une question de quiz directement en base</p>
         <div class="form-group"><label>Niveau</label><select id="adm-level"><option>3ème</option><option>Seconde</option><option>Première</option><option>Terminale</option></select></div>
-        <div class="form-group"><label>Matière</label><select id="adm-subject"><option>📐 Mathématiques</option><option>📚 Français</option><option>🌍 Histoire-Géo</option></select></div>
+        <div class="form-group"><label>Matière</label><select id="adm-subject"><option>📐 Mathématiques</option><option>📚 Français</option><option>🌍 Histoire-Géo</option><option>🇬🇧 Anglais</option><option>🛠️ Technologie</option></select></div>
         <div class="form-group"><label>Chapitre Numéro</label><input type="number" id="adm-chap-num" value="1"></div>
         <div class="form-group"><label>Titre du Chapitre</label><input type="text" id="adm-chap-title" placeholder="Ex: Les Probabilités"></div>
         <div class="form-group"><label>Question</label><input type="text" id="adm-question" placeholder="Énoncé"></div>
@@ -209,22 +212,9 @@
         "3ème": {
             "📐 Mathématiques": "<h3>Chapitre 1 : Arithmétique</h3><p>Un nombre premier est un entier naturel qui admet exactement deux diviseurs distincts : 1 et lui-même.</p><h3>Chapitre 2 : Théorème de Thalès</h3><p>Nécessite deux droites parallèles coupées par deux droites sécantes pour établir l'égalité des rapports.</p>",
             "📚 Français": "<h3>Chapitre 1 : L'Adverbe</h3><p>Mots invariables modifiant un verbe ou un adjectif. Souvent formés en '-ment'.</p><h3>Chapitre 2 : Les Figures de Style</h3><p>La comparaison utilise un outil comparatif ('comme'), pas la métaphore.</p>",
-            "🌍 Histoire-Géo": "<h3>Chapitre 1 : Première Guerre Mondiale</h3><p>Phase de violence de masse de 1914 à 1918 (guerre des tranchées).</p><h3>Chapitre 2 : Aires Urbaines</h3><p>Définies par un pôle urbain dynamique entouré de sa couronne périurbaine.</p>"
-        },
-        "Seconde": {
-            "📐 Mathématiques": "<h3>Chapitre 1 : Les Ensembles de Nombres</h3><p>Classification stricte des réels : N, Z, D, Q et les nombres irrationnels.</p><h3>Chapitre 2 : Fonction Carré</h3><p>f(x)=x² est représentée géométriquement par une parabole symétrique.</p>",
-            "📚 Français": "<h3>Chapitre 1 : Le Théâtre</h3><p>Structure d'une pièce classique : exposition, nœud dramatique, dénouement.</p><h3>Chapitre 2 : Poésie du XIXe</h3><p>Exploration de la modernité poétique avec l'émergence du Spleen.</p>",
-            "🌍 Histoire-Géo": "<h3>Chapitre 1 : Antiquité Méditerranéenne</h3><p>Modèle civique d'Athènes et rayonnement culturel de sa démocratie directe.</p><h3>Chapitre 2 : Transition Démographique</h3><p>Modèle en phases liant la baisse de la mortalité au boom de population.</p>"
-        },
-        "Première": {
-            "📐 Mathématiques": "<h3>Chapitre 1 : Équations du Second Degré</h3><p>L'équation ax² + bx + c = 0 s'étudie à l'aide de son discriminant Delta = b² - 4ac. Si Delta > 0, il y a deux solutions distinctes.</p><h3>Chapitre 2 : Introduction à la Dérivation</h3><p>Le nombre dérivé mesure le coefficient directeur de la tangente à une courbe en un point.</p>",
-            "📚 Français": "<h3>Chapitre 1 : L'Anaphore</h3><p>Figure de répétition stylistique forte positionnée systématiquement en tête de vers ou de phrase pour marteler une idée.</p><h3>Chapitre 2 : Évolution du Roman</h3><p>Le XIXe siècle voit s'affronter et s'installer le Réalisme (Stendhal, Balzac) et le Naturalisme (Zola).</p>",
-            "🌍 Histoire-Géo": "<h3>Chapitre 1 : Ruptures Révolutionnaires</h3><p>La période 1789-1804 instaure la fin des privilèges, la Déclaration des Droits de l'Homme et la proclamation de la République (1792).</p><h3>Chapitre 2 : Métropolisation</h3><p>Les métropoles concentrent les pouvoirs économiques, politiques et culturels à l'échelle mondiale.</p>"
-        },
-        "Terminale": {
-            "📐 Mathématiques": "<h3>Chapitre 1 : Suites Numériques</h3><p>Une suite géométrique progresse par multiplication constante par sa raison q. Formule générale : u_n = u_0 * q^n.</p><h3>Chapitre 2 : Fonction Exponentielle</h3><p>Unique fonction dérivable sur R égale à sa propre dérivée et prenant la valeur 1 en 0. Notée exp(x) ou e^x.</p>",
-            "📚 Français": "<h3>Chapitre 1 : Philosophie des Lumières</h3><p>Lutte philosophique majeure menée par l'Encyclopédie contre l'absolutisme, le fanatisme religieux et pour l'autonomie de la pensée.</p><h3>Chapitre 2 : Le Tragique Classique</h3><p>Le théâtre tragique met en scène des personnages nobles broyés par le destin, la fatalité et les passions destructrices.</p>",
-            "🌍 Histoire-Géo": "<h3>Chapitre 1 : Le Monde de 1945 à nos jours</h3><p>La Guerre froide divise le globe en un système bipolaire (USA vs URSS) caractérisé par des crises successives sans affrontement direct.</p><h3>Chapitre 2 : Dynamiques de la Mondialisation</h3><p>Les flux mondiaux de marchandises transitent en priorité par des verrous maritimes géostratégiques (canaux et détroits mondiaux).</p>"
+            "🌍 Histoire-Géo": "<h3>Chapitre 1 : Première Guerre Mondiale</h3><p>Phase de violence de masse de 1914 à 1918 (guerre des tranchées).</p><h3>Chapitre 2 : Aires Urbaines</h3><p>Définies par un pôle urbain dynamique entouré de sa couronne périurbaine.</p>",
+            "🇬🇧 Anglais": "<h3>Fiches d'Anglais</h3><p>Utilise les modules de quiz pour réviser la grammaire (Présents, Passés, Conditionnels et Modaux).</p>",
+            "🛠️ Technologie": "<h3>Fiches de Technologie</h3><p>Révise les réseaux informatiques, la programmation Scratch/Python et le design d'objets via l'onglet Quiz.</p>"
         }
     };
 
@@ -302,8 +292,17 @@
         let q = listeQuiz[indexQuestion];
         document.getElementById('quiz-question').innerText = `[Chapitre ${q.chapter_number} : ${q.title_chapter}] \n\n ${q.question}`;
         let html = "";
+        
+        // CORRECTION DE L'INDEX : Si la base renvoie un index à partir de 1, on s'adapte
+        let indexCorrectAjuste = q.reponse_index;
+        if (q.reponse_index >= 1 && q.reponse_index <= q.options.length) {
+            indexCorrectAjuste = q.reponse_index - 1; 
+        }
+
         q.options.forEach((opt, idx) => { 
-            html += `<button class="card-btn" onclick="validerReponse(${idx}, ${q.reponse_index}, '${q.explication.replace(/'/g, "\\'")}')">${opt}</button>`; 
+            // Sécurisation de l'explication textuelle
+            let explSafe = q.explication ? q.explication.replace(/'/g, "\\'").replace(/"/g, '\\"') : "";
+            html += `<button class="card-btn" onclick="validerReponse(${idx}, ${indexCorrectAjuste}, '${explSafe}')">${opt}</button>`; 
         });
         document.getElementById('quiz-options').innerHTML = html;
         document.getElementById('quiz-feedback').style.display = "none";
@@ -337,12 +336,14 @@
     }
 
     async function chargerMessagesExistants() {
+        if(!currentUser) return;
         const { data, error } = await supabaseClient.from('messages').select('*').order('created_at', { ascending: true }).limit(50);
         if(!error && data) {
             let box = document.getElementById('chat-messages');
             box.innerHTML = "";
             data.forEach(msg => {
-                let type = msg.user_email === (currentUser.user_metadata.display_name || currentUser.email) ? 'msg-user' : 'msg-other';
+                let currentUserName = currentUser.user_metadata.display_name || currentUser.email;
+                let type = msg.user_email === currentUserName ? 'msg-user' : 'msg-other';
                 box.innerHTML += `<div class="chat-msg ${type}"><strong>${msg.user_email}:</strong> ${msg.content}</div>`;
             });
             box.scrollTop = box.scrollHeight;
@@ -352,7 +353,8 @@
     async function envoyerMessage() {
         let inp = document.getElementById('chat-input');
         if(!inp.value.trim() || !currentUser) return;
-        await supabaseClient.from('messages').insert([{ user_email: currentUser.user_metadata.display_name || currentUser.email, content: inp.value }]);
+        let currentUserName = currentUser.user_metadata.display_name || currentUser.email;
+        await supabaseClient.from('messages').insert([{ user_email: currentUserName, content: inp.value }]);
         inp.value = "";
     }
 
@@ -360,7 +362,8 @@
         supabaseClient.channel('salon-eleves').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
             let msg = payload.new;
             let box = document.getElementById('chat-messages');
-            let type = msg.user_email === (currentUser.user_metadata.display_name || currentUser.email) ? 'msg-user' : 'msg-other';
+            let currentUserName = currentUser.user_metadata.display_name || currentUser.email;
+            let type = msg.user_email === currentUserName ? 'msg-user' : 'msg-other';
             box.innerHTML += `<div class="chat-msg ${type}"><strong>${msg.user_email}:</strong> ${msg.content}</div>`;
             box.scrollTop = box.scrollHeight;
         }).subscribe();
@@ -401,7 +404,9 @@
             document.getElementById('adm-o2').value,
             document.getElementById('adm-o3').value
         ];
-        const reponse_index = parseInt(document.getElementById('adm-correct').value);
+        
+        // Le panel admin utilise des index de 0 à 3, on ajoute +1 pour s'aligner sur notre format de BDD (1 à 4)
+        const reponse_index = parseInt(document.getElementById('adm-correct').value) + 1;
         const explication = document.getElementById('adm-expl').value;
 
         if(!title_chapter || !question || !options[0] || !options[1]) {
@@ -423,23 +428,3 @@
 </script>
 </body>
 </html>
-
-// Exemple si tu utilises le client Supabase en JavaScript
-async function recupererQuiz(matiere, chapitre) {
-  const { data, error } = await supabase
-    .from('quizzes')
-    .select('*')
-    .eq('subject', matiere)
-    .eq('chapter_number', chapitre);
-
-  if (error) {
-    console.error("Erreur lors de la récupération :", error);
-    return;
-  }
-
-  console.log("Voici tes questions :", data);
-  // Ici, tu appelles ta fonction pour afficher la question à l'écran
-}
-git add .
-git commit -m "Ajout de la récupération des quiz"
-git push
