@@ -198,6 +198,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+    // Vérifie bien que l'URL et la clé ci-dessous correspondent EXACTEMENT à ton projet Supabase
     const supabaseUrl = 'https://ropoeqggndtpnwyfynsf.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJvcG9lcWdnbmR0cG53eWZ5bnNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzMjg4MzIsImV4cCI6MjA5NTg5MzMwMn0.D6D8Rj6_C005F99P_b40hP5wR6qL224kscOQ-Hw46W0';
     const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
@@ -227,18 +228,38 @@
         const email = document.getElementById('reg-email').value;
         const password = document.getElementById('reg-password').value;
         const pseudo = document.getElementById('reg-pseudo').value;
-        const { data, error } = await supabaseClient.auth.signUp({ email, password, options: { data: { display_name: pseudo } } });
-        if (error) alert(error.message); else loginReussi(data.user);
+        
+        const { data, error } = await supabaseClient.auth.signUp({ 
+            email, 
+            password, 
+            options: { data: { display_name: pseudo } } 
+        });
+        
+        if (error) {
+            alert("Erreur Inscription : " + error.message);
+        } else {
+            loginReussi(data.user);
+        }
     }
 
     async function connexion() {
         const email = document.getElementById('login-email').value;
         const password = document.getElementById('login-password').value;
-        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-        if (error) alert(error.message); else loginReussi(data.user);
+        
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ 
+            email, 
+            password 
+        });
+        
+        if (error) {
+            alert("Erreur Connexion : " + error.message);
+        } else {
+            loginReussi(data.user);
+        }
     }
 
     function loginReussi(user) {
+        if (!user) return;
         currentUser = user;
         document.getElementById('user-display').innerText = `👤 ${user.user_metadata.display_name || user.email}`;
         
@@ -274,7 +295,13 @@
     }
 
     async function recupererQuiz() {
-        const { data, error } = await supabaseClient.from('quizzes').select('*').eq('level', niveauSelectionne).eq('subject', matiereSelectionnee).order('id', { ascending: true });
+        const { data, error } = await supabaseClient
+            .from('quizzes')
+            .select('*')
+            .eq('level', niveauSelectionne)
+            .eq('subject', matiereSelectionnee)
+            .order('id', { ascending: true });
+            
         if (!error && data && data.length > 0) { 
             listeQuiz = data; 
             indexQuestion = 0; 
@@ -293,14 +320,12 @@
         document.getElementById('quiz-question').innerText = `[Chapitre ${q.chapter_number} : ${q.title_chapter}] \n\n ${q.question}`;
         let html = "";
         
-        // CORRECTION DE L'INDEX : Si la base renvoie un index à partir de 1, on s'adapte
         let indexCorrectAjuste = q.reponse_index;
         if (q.reponse_index >= 1 && q.reponse_index <= q.options.length) {
             indexCorrectAjuste = q.reponse_index - 1; 
         }
 
         q.options.forEach((opt, idx) => { 
-            // Sécurisation de l'explication textuelle
             let explSafe = q.explication ? q.explication.replace(/'/g, "\\'").replace(/"/g, '\\"') : "";
             html += `<button class="card-btn" onclick="validerReponse(${idx}, ${indexCorrectAjuste}, '${explSafe}')">${opt}</button>`; 
         });
@@ -405,7 +430,6 @@
             document.getElementById('adm-o3').value
         ];
         
-        // Le panel admin utilise des index de 0 à 3, on ajoute +1 pour s'aligner sur notre format de BDD (1 à 4)
         const reponse_index = parseInt(document.getElementById('adm-correct').value) + 1;
         const explication = document.getElementById('adm-expl').value;
 
@@ -428,6 +452,3 @@
 </script>
 </body>
 </html>
-git add .
-git commit -m "Ajout de la récupération des quiz"
-git push
