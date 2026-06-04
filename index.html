@@ -423,3 +423,23 @@
 </script>
 </body>
 </html>
+
+// Exemple si tu utilises le client Supabase en JavaScript
+async function recupererQuiz(matiere, chapitre) {
+  const { data, error } = await supabase
+    .from('quizzes')
+    .select('*')
+    .eq('subject', matiere)
+    .eq('chapter_number', chapitre);
+
+  if (error) {
+    console.error("Erreur lors de la récupération :", error);
+    return;
+  }
+
+  console.log("Voici tes questions :", data);
+  // Ici, tu appelles ta fonction pour afficher la question à l'écran
+}
+git add .
+git commit -m "Ajout de la récupération des quiz"
+git push
