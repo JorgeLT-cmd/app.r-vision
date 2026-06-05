@@ -359,37 +359,14 @@
             content.innerHTML = `<div class="chapter-box"><p>Fiche synthèse en cours de rédaction.</p></div>`;
         }
     }
+    let niveauSelectionne = "";
+    let matiereSelectionnee = "";
+    let listeQuiz = [];
+    let indexQuestion = 0;
+    let currentUser = null;
 
-    async function chargerMessagesExistants() {
-        if(!currentUser) return;
-        const { data, error } = await supabaseClient.from('messages').select('*').order('created_at', { ascending: true }).limit(50);
-        if(!error && data) {
-            let box = document.getElementById('chat-messages');
-            box.innerHTML = "";
-            data.forEach(msg => {
-                let currentUserName = currentUser.user_metadata.display_name || currentUser.email;
-                let type = msg.user_email === currentUserName ? 'msg-user' : 'msg-other';
-                box.innerHTML += `<div class="chat-msg ${type}"><strong>${msg.user_email}:</strong> ${msg.content}</div>`;
-            });
-            box.scrollTop = box.scrollHeight;
-        }
-    }
-
-    async function envoyerMessage() {
-        let inp = document.getElementById('chat-input');
-        if(!inp.value.trim() || !currentUser) return;
-        let currentUserName = currentUser.user_metadata.display_name || currentUser.email;
-        await supabaseClient.from('messages').insert([{ user_email: currentUserName, content: inp.value }]);
-        inp.value = "";
-    }
-
-    function brancherLeChat() {
-        supabaseClient.channel('salon-eleves').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
-            let msg = payload.new;
-            let box = document.getElementById('chat-messages');
-            let currentUserName = currentUser.user_metadata.display_name || currentUser.email;
-            let type = msg.user_email === currentUserName ? 'msg-user' : 'msg-other';
-            box.innerHTML += `<div class="chat-msg ${type}"><strong>${msg.user_email}:</strong> ${msg.content}</div>`;
+    const coursDictionnaire = {
+        "3ème": {}</div>`;
             box.scrollTop = box.scrollHeight;
         }).subscribe();
     }
