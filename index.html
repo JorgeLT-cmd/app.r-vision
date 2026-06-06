@@ -270,8 +270,6 @@
         }
         
         naviguerVers('screen-dashboard');
-        brancherLeChat();
-        chargerMessagesExistants();
     }
 
     async function deconnexion() {
@@ -359,17 +357,6 @@
             content.innerHTML = `<div class="chapter-box"><p>Fiche synthèse en cours de rédaction.</p></div>`;
         }
     }
-    let niveauSelectionne = "";
-    let matiereSelectionnee = "";
-    let listeQuiz = [];
-    let indexQuestion = 0;
-    let currentUser = null;
-
-    const coursDictionnaire = {
-        "3ème": {}</div>`;
-            box.scrollTop = box.scrollHeight;
-        }).subscribe();
-    }
 
     function demanderIa() {
         let inp = document.getElementById('ai-input');
@@ -429,6 +416,3 @@
 </script>
 </body>
 </html>
-
-const SUPABASE_URL = "https://tyycwqowoiootnedzzvi.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR5eWN3cW93b2lvb3RuZWR6enZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzMjg4MzIsImV4cCI6MjA5NTkwNDgzMn0.CSChBAo1wRlhiChhw8fA_ve59DAyLvmovKyxvgqeIjM";
